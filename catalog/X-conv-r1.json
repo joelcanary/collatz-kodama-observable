@@ -1,0 +1,11 @@
+{
+  "id": "X-conv-r1",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "AVISO: E[min(r,K)] = 3−(2K+4)2^{−K} SOLO vale con la convención r(1)=0. Con ν₂(0)=∞ literal da 5/2 en vez de 7/4 a K=3. Al publicar hay que declarar la convención.",
+  "evidencia": "python main.py --verificar T2",
+  "rango": "K = 3..16",
+  "hipotesis": null,
+  "relacionado": [],
+  "fecha": "2026-07-20"
+}

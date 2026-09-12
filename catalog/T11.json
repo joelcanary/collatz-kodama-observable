@@ -1,0 +1,13 @@
+{
+  "id": "T11",
+  "problema": "collatz",
+  "nivel": "P",
+  "enunciado": "Para todo módulo M, ν₂(3x+1) NO es función de x mod M. Ninguna reducción a residuos finitos modela la dinámica.",
+  "evidencia": "python main.py --verificar T11",
+  "rango": null,
+  "hipotesis": "¿Puede un autómata finito sobre residuos decidir Collatz?",
+  "relacionado": [
+    "T12"
+  ],
+  "fecha": "2026-07-20"
+}

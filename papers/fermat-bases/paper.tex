@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\sloppy
+
+\title{\bfseries Closed-Form Orbits of the Maps $ax+1$:\\ A Characterisation of Fermat Bases}
+\author{Joel Cruz Cabrera\\
+\small Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+For odd $a$ consider the accelerated map $x\mapsto\operatorname{odd\_part}(ax+1)$ on odd
+integers, and the associated ``block'' parametrisation $x=2^{r+1}m-1$. We characterise
+exactly those bases $a$ for which the iterates admit the closed polynomial form
+$x_i=(a^i m-1)/(a-1)$: this happens \emph{if and only if} $a-1$ is a power of $2$, i.e.
+$a=2^e+1$ --- a Fermat-type base ($3,5,9,17,33,\dots$). Collatz is the case $a=3$. Both
+directions follow from a single one-step law, valid for every odd $a$. \textbf{The whole
+characterisation --- the one-step law, the biconditional, and the orbit formula --- is
+formalised in Lean~4 and machine-checked with kernel-only axioms.}
+\textbf{This is a theorem about iteration of affine maps and is independent of the Collatz
+conjecture.}
+\end{abstract}
+
+\noindent\textbf{MSC:} 37P05 (Arithmetic dynamics), 11B37 (Recurrences), 68V20
+(Formalisation of mathematics).
+
+\section{Setting}
+Fix an odd integer $a\ge3$. On the odd integers define
+\[
+  \operatorname{step}_a(x)=\frac{ax+1}{2^{v_2(ax+1)}},
+\]
+where $v_2$ is the $2$-adic valuation. Every odd $x$ can be written uniquely as
+\begin{equation}\label{eq:block}
+  x=2^{r+1}m-1,\qquad m \text{ odd},\ r\ge0,
+\end{equation}
+so that $r=v_2(x+1)-1$ records how many leading valuation-one steps the orbit begins with.
+
+The question we answer is: \emph{for which $a$ do the iterates of $\operatorname{step}_a$
+starting from \eqref{eq:block} follow a single closed-form polynomial law?}
+
+\section{The characterisation}
+
+\begin{theorem}[One-step law, and the characterisation]\label{thm:main}
+Let $a\ge3$ be odd and write $a-1=2^{e}q$ with $q$ odd. For every odd $m$ and every $r\ge e$,
+put $x=2^{r+1}m-1$. Then
+\begin{equation}\label{eq:onestep}
+  v_2(ax+1)=e\qquad\text{and}\qquad \operatorname{step}_a(x)=a\,2^{\,r+1-e}m-q .
+\end{equation}
+Hence the closed-form law $\operatorname{step}_a(x)=a\,2^{\,r+1-e}m-1$ holds \emph{if and
+only if} $q=1$, i.e.\ iff $a-1$ is a power of $2$, i.e.\ iff $a=2^{e}+1$. In that case
+iteration gives
+\begin{equation}\label{eq:cf}
+  x_i=a^{i}\,2^{\,r+1-ie}m-1\qquad\text{for every }i\text{ with }ie\le r .
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Compute:
+\[
+  ax+1=a(2^{r+1}m-1)+1=a\,2^{r+1}m-(a-1)=2^{e}\bigl(a\,2^{\,r+1-e}m-q\bigr).
+\]
+As $r\ge e$, the bracket is (even)$-$(odd), hence odd; so $v_2(ax+1)=e$ \emph{exactly} and
+$\operatorname{step}_a(x)$ is the bracket, which is \eqref{eq:onestep}. Its value equals
+$a2^{\,r+1-e}m-1$ precisely when $q=1$ --- both directions at once.
+
+For \eqref{eq:cf}, let $q=1$. The image $a2^{\,r+1-e}m-1$ has again the shape
+\eqref{eq:block}, with odd parameter $m'=am$ and exponent $r'+1=r+1-e$; so the family is
+preserved and induction on $i$ gives \eqref{eq:cf} while $ie\le r$.
+\end{proof}
+
+\noindent The one-step law \eqref{eq:onestep} holds for \emph{every} odd $a$; the
+characterisation is simply the observation that its right-hand side falls back into the
+family exactly when the odd part $q$ of $a-1$ is trivial.
+
+\begin{table}[ht]\centering
+\begin{tabular}{c c c c}
+\toprule
+$a$ & $a-1=2^{e}q$ & $q$ & closed form?\\\midrule
+$3$  & $2^1\cdot1$ & $1$ & yes (Collatz)\\
+$5$  & $2^2\cdot1$ & $1$ & yes\\
+$7$  & $2^1\cdot3$ & $3$ & no\\
+$9$  & $2^3\cdot1$ & $1$ & yes\\
+$11$ & $2^1\cdot5$ & $5$ & no\\
+$13$ & $2^2\cdot3$ & $3$ & no\\
+$15$ & $2^1\cdot7$ & $7$ & no\\
+$17$ & $2^4\cdot1$ & $1$ & yes\\
+$33$ & $2^5\cdot1$ & $1$ & yes\\
+\bottomrule
+\end{tabular}
+\caption{The closed form holds exactly when the odd part $q$ of $a-1$ is $1$. The one-step
+law and the closed form were tested independently by running the map --- the ``no'' column is
+a genuine test, not a restatement of the hypothesis --- for all odd $a\le999$.}
+\end{table}
+
+\begin{remark}[Terminology]
+The bases $a=2^e+1$ are $3,5,9,17,33,65,129,257,513,\dots$; we call them \emph{Fermat-type}
+because the Fermat numbers $2^{2^k}+1$ are the sub-family $e=2^k$. The two sets are
+\emph{not} equal: $9,33,65,129,513$ are of the form $2^e+1$ but are not Fermat numbers.
+\end{remark}
+
+\section{Formalisation}
+The orbit formula \eqref{eq:cf} is formalised in Lean~4 as \texttt{orbit\_formula\_fermat}:
+\[
+  \texttt{iter\_a}\ a\ i\ (2^{r+1}m-1)=a^{i}\,2^{\,r+1-ie}m-1\qquad(ie\le r),
+\]
+for $a=2^{e}+1$, $e\ge1$, $m$ odd. It builds with
+\begin{center}
+  \texttt{lake build CollatzProof.KodamaFermat}
+\end{center}
+and \texttt{\#print axioms} reports exactly the three ambient kernel axioms
+(\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}) --- no \texttt{sorry} and
+no custom axioms. The audit lives in \texttt{CollatzProof/AxiomAudit.lean} so that it re-runs
+on every build.
+
+Since 2026-07-17 the \emph{whole} characterisation is in the kernel, not just one half:
+\begin{itemize}[nosep]
+  \item \texttt{step\_a\_general}: the one-step law \eqref{eq:onestep} for \emph{every} odd
+        base $a$ --- write $a-1=2^{e}q$ with $q$ odd, then $v_2(an+1)=e$ and
+        $\operatorname{step}_a(2^{s+e}m-1)=a2^{s}m-q$;
+  \item \texttt{closed\_form\_iff\_fermat}: the biconditional
+        $\operatorname{step}_a(2^{s+e}m-1)=a2^{s}m-1 \iff q=1$;
+  \item \texttt{fermat\_iff\_pow\_two}: $a=2^{e}+1 \iff q=1$.
+\end{itemize}
+All report exactly the three ambient kernel axioms. The audit
+\texttt{CollatzProof/AxiomAudit.lean} re-runs \texttt{\#print axioms} on every one of them at
+each build, so the claim cannot silently rot.
+
+\section{Consequences and scope}
+\begin{corollary}
+The Collatz map ($a=3$) is the smallest Fermat-type base; the next are $5,9,17,33,\dots$ (all
+such bases are odd, $2^e+1$ being odd for $e\ge1$).
+The heuristic drift of $\operatorname{step}_a$ is $\lambda_a=\log a-\mathbb{E}[v_2]\log2
+=\log a-2\log2$, using $\mathbb{E}[v_2]=2$ from the companion note~\cite{geom},
+negative iff $a<4$; thus $a=3$ is the unique odd base on the contracting side
+and every odd $a\ge5$ is super-critical.
+\end{corollary}
+
+\begin{remark}[What this does \emph{not} say]
+Theorem~\ref{thm:main} is a statement about the algebraic shape of the iterates. It does not
+decide whether any particular orbit converges or diverges: the drift $\lambda_a$ is an
+average and, as the divergence example $\lfloor\sqrt2\,n+4\rfloor$ of
+Alth\"ofer--Zipproth shows, the sign of an average drift does not settle the fate of a
+deterministic orbit. In particular this paper says nothing about the Collatz conjecture, nor
+about the open question of whether $9x+1$ diverges from $x=1$.
+\end{remark}
+
+\section*{Reproducibility}
+The base table is regenerated by \texttt{tools/verify\_for\_papers.py}; the Lean development
+builds with \texttt{lake build}.
+
+\section*{Acknowledgement}
+AI-assisted; every claim was verified by exact computation or Lean's kernel before inclusion.
+
+\begin{thebibliography}{9}
+\bibitem{geom} J.~Cruz Cabrera, \emph{An exact equidistribution law for the $2$-adic
+valuations of $3^rm-1$}, companion note, 2026.
+\bibitem{lagarias} J.~C. Lagarias, \emph{The $3x+1$ problem and its generalizations},
+Amer. Math. Monthly \textbf{92} (1985), 3--23.
+\bibitem{mathlib} The mathlib Community, \emph{The Lean mathematical library}, CPP 2020.
+\bibitem{az} I.~Alth\"ofer, T.~Zipproth, \emph{Divergence in a Collatz-type recursion},
+preprint, August 2025.
+\end{thebibliography}
+\end{document}

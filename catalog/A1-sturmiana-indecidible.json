@@ -1,0 +1,15 @@
+{
+  "id": "A1-sturmiana-indecidible",
+  "problema": "collatz",
+  "nivel": "H",
+  "enunciado": "A1, parte Sturmiana: INDECIDIBLE con los 18 términos actuales. El test (¿la palabra de huecos contiene ambos cuadrados 11 y 22, que Sturmiana prohíbe?) depende del umbral de binarización: unos umbrales dan compatible, otros no. No robusto ⟹ no concluyente. Lo firme: los ratios oscilan en [1.44, 1.90] sin converger (no exponencial puro, consistente con rotación irracional). QUÉ LA DECIDIRÍA: ρ(j) hasta j≈30, con lo que p(k)=k+1 se podría comprobar con margen. Es un cálculo de teoría de números aditiva, no un concepto nuevo.",
+  "evidencia": "python research/exploraciones/rho_A1_riguroso.py",
+  "rango": "18 términos; test no robusto al umbral",
+  "hipotesis": null,
+  "relacionado": [
+    "A1-c-finita-cerrada",
+    "A1-que-falta",
+    "T13"
+  ],
+  "fecha": "2026-07-21"
+}

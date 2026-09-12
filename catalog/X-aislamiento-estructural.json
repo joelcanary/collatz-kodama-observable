@@ -1,0 +1,13 @@
+{
+  "id": "X-aislamiento-estructural",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "CIERRE DEL PATRÓN: la contaminación entre dominios apareció 4 veces, cada una en una capa nueva sin blindar (observables, observables_para, bucle de avance, y universo.forjar_en). Blindar capa por capa pierde: la siguiente nace expuesta. Solución estructural: usecases/forjadores.py es el ÚNICO sitio que elige motor, y tests/test_aislamiento.py analiza el código por AST y FALLA si aparece un atajo nuevo. La 4ª vía la detectó ese test, no un usuario.",
+  "evidencia": "python -m unittest tests.test_aislamiento",
+  "rango": "capas domain/, usecases/, adapters/, infra/, main.py, meta_trinity.py",
+  "hipotesis": null,
+  "relacionado": [
+    "X-rut-dominio"
+  ],
+  "fecha": "2026-07-20"
+}

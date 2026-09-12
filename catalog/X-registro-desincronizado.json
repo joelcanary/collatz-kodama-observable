@@ -1,0 +1,13 @@
+{
+  "id": "X-registro-desincronizado",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "PROBLEMA ENCONTRADO en el repo descargado: docs/HALLAZGOS.md publicaba 'B-formula-completa' sin que existiera su JSON en research/hallazgos/bsd/ — una afirmación sin fuente rastreable, justo lo que el registro existe para impedir. Restaurado el JSON y añadido tests/test_registro_sincronizado.py, que compara el documento con el registro por invariante (no por casos) y también exige que cada JSON tenga id coherente con su archivo, problema coherente con su carpeta, y rango declarado si es nivel V.",
+  "evidencia": "python -m unittest tests.test_registro_sincronizado",
+  "rango": "todo research/hallazgos/ y docs/HALLAZGOS.md",
+  "hipotesis": null,
+  "relacionado": [
+    "X-aislamiento-estructural"
+  ],
+  "fecha": "2026-07-20"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "T13",
+  "problema": "collatz",
+  "nivel": "P",
+  "enunciado": "C_Collatz = 0.28627450232410874196… es trascendente (expansión binaria Sturmiana).",
+  "evidencia": "python main.py --verificar T13",
+  "rango": null,
+  "hipotesis": null,
+  "relacionado": [
+    "T16"
+  ],
+  "fecha": "2026-07-20"
+}

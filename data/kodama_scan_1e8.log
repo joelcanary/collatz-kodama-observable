@@ -1,0 +1,5 @@
+N=100000000: champion n=993  delta=0.325550  R=0.202006  (K=32, S=61)  in 51s
+  up to 10^5: max delta 0.325550 at n=993
+  up to 10^6: max delta 0.325377 at n=4393983
+  up to 10^7: max delta 0.325377 at n=21945135
+  up to 10^8: max delta 0.325367 at n=99892307

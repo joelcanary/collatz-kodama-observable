@@ -1,0 +1,16 @@
+{
+  "id": "A1-extension-j29",
+  "problema": "collatz",
+  "nivel": "H",
+  "enunciado": "EXTENSION de rho(j) (densidad resistente) de 18 a 27 terminos (j=3..20 -> j=3..29), exactamente lo que A1-que-falta pedia (\"con rho hasta j~30 se decidiria\"). Fuente confirmada: la definicion de DISCOVER_FINAL/verify_all.py (bloque B25, funcion _resiste con presupuesto de precision en bits) reproduce EXACTO los 18 valores citados en T15/A1 (0.8s), y research/exploraciones/rho_A1_riguroso.py y rho_vs_ccollatz.py -- que solo tenian el array RHO pegado a mano, sin generador -- citaban esa secuencia sin que ningun script en research/ la regenerase. Ahora hay generador propio: research/exploraciones/rho_extension_j30.py.\n\nRESULTADOS con 27 terminos (research/exploraciones/rho_extension_j30_analisis.py):\n(a) C-finita: sigue NO (orden<=7) -- mismo veredicto que con 18, mas evidencia.\n(b) Alfabeto de huecos entre duplicaciones exactas: sigue en {2,3} (9 posiciones ahora: 2,5,7,10,13,15,18,21,24; huecos 3,2,3,3,2,3,3,3) -- CONFIRMADO con casi el doble de datos.\n(c) Test Sturmiano de robustez a la binarizacion: SIGUE dando False (indecidible) con 27 terminos. A1-sturmiana-indecidible predijo que j~30 lo decidiria; NO lo decidio -- la prediccion sobre CUANDO se decidiria era optimista, el fenomeno en si sigue igual de indecidible.\n(d) log2(rho(j))/j: SIGUE subiendo monotono en los 9 terminos nuevos (0.75476 -> 0.78787), sin señal de estabilizarse. La pregunta de convergencia sigue genuinamente abierta.\n\nComputo: j=29 tomo 264s en Python puro (fuerza bruta O(2^j) sobre residuos impares mod 2^j); j=30 hubiera tomado ~500s, cortado por presupuesto de tiempo, no por dificultad matematica.",
+  "evidencia": "python research/exploraciones/rho_extension_j30.py  |  python research/exploraciones/rho_extension_j30_analisis.py",
+  "rango": null,
+  "hipotesis": "A1-que-falta: con rho(j) hasta j~30, se decidiria si el alfabeto de huecos sigue en {2,3} y si log2(rho)/j converge?",
+  "relacionado": [
+    "A1-que-falta",
+    "A1-sturmiana-indecidible",
+    "A1-c-finita-cerrada",
+    "A1-sturmiana-sugerida"
+  ],
+  "fecha": "2026-07-24"
+}

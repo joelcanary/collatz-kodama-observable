@@ -1,0 +1,140 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\val}{\operatorname{v}_2}
+\sloppy
+
+\title{\bfseries An Exact Equidistribution Law for the\\ $2$-adic Valuations of $3^{r}m-1$}
+\author{Joel Cruz Cabrera\\
+\small Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+We prove that for all $r,k\ge1$ there is \emph{exactly one} odd residue $m$ modulo $2^k$ with
+$\val(3^{r}m-1)\ge k$. Consequently, for $m$ drawn uniformly from the odd residues mod $2^k$,
+$\Pr[\val(3^{r}m-1)=k]=2^{-k}$ --- a geometric law with mean $2$, \emph{independent of $r$}.
+The result is an exact counting statement about the $2$-adic valuation of $3^rm-1$; it is the
+rigorous form of a folklore heuristic used in the study of $3x+1$-type maps, but it is a
+statement about $2$-adic arithmetic and does not depend on any conjecture. The theorem is
+formalised in Lean~4 and machine-checked with kernel-only axioms.
+\end{abstract}
+
+\noindent\textbf{MSC:} 11A07 (Congruences), 11S05 ($2$-adic fields), 60C05 (Combinatorial
+probability), 68V20 (Formalisation of mathematics).
+
+\section{Statement}
+Throughout, $\val$ denotes the $2$-adic valuation and $m$ ranges over the odd residues modulo
+$2^k$ (there are $2^{k-1}$ of them).
+
+\begin{theorem}[Exact equidistribution]\label{thm:main}
+Let $r,k\ge1$. There is exactly one odd $m\in[0,2^{k})$ with
+\[
+  \val(3^{r}m-1)\ \ge\ k .
+\]
+\end{theorem}
+
+\begin{corollary}[Geometric law]\label{cor:geom}
+Let $m$ be uniform on the odd residues mod $2^{k}$. Then for $1\le j<k$,
+\[
+  \Pr\bigl[\val(3^{r}m-1)=j\bigr]=2^{-j},
+\]
+independently of $r$; and $\Pr[\val\ge k]=2^{-(k-1)}$. Letting $k\to\infty$, the valuation
+$\val(3^rm-1)$ is $\mathrm{Geom}(1/2)$ on $\{1,2,\dots\}$, with mean
+$\mathbb{E}[\val]=\sum_{j\ge1}j2^{-j}=2$.
+\end{corollary}
+
+\section{Proof}
+\begin{lemma}[Invertibility]\label{lem:inv}
+$3$ is a unit in $\mathbb{Z}/2^{k}\mathbb{Z}$; hence $3^{r}$ is a unit and the map
+$m\mapsto 3^{r}m$ is a bijection of $(\mathbb{Z}/2^{k}\mathbb{Z})^{\times}$.
+\end{lemma}
+\begin{proof}
+$\gcd(3,2)=1$, so $3$ is invertible modulo every power of $2$; units form a group, so $3^{r}$
+is a unit and multiplication by it permutes the units.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+The condition $\val(3^{r}m-1)\ge k$ is exactly $3^{r}m\equiv1\pmod{2^{k}}$, i.e.
+$m\equiv(3^{r})^{-1}\pmod{2^{k}}$. By Lemma~\ref{lem:inv} the inverse $(3^{r})^{-1}$ exists
+and is unique modulo $2^{k}$, and it is odd (being a unit). Hence exactly one odd residue
+$m\in[0,2^{k})$ satisfies the condition.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:geom}]
+Apply Theorem~\ref{thm:main} at level $j$ and at level $j+1$: the odd residues mod $2^{k}$
+with $\val\ge j$ are those lying in a single class mod $2^{j}$, hence a fraction
+$2^{-(j-1)}$ of the odd residues; likewise $\Pr[\val\ge j+1]=2^{-j}$. Subtracting,
+$\Pr[\val=j]=2^{-(j-1)}-2^{-j}=2^{-j}$. The count is independent of $r$ because
+Lemma~\ref{lem:inv} makes multiplication by $3^{r}$ a bijection of the units for every $r$.
+The mean is $\sum_{j\ge1}j2^{-j}=2$.
+\end{proof}
+
+\begin{remark}
+Only two facts are used: that the base is \emph{odd} (hence a $2$-adic unit) and that the
+units form a group. So the theorem holds verbatim with $3$ replaced by any odd $a$: for all
+$r,k\ge1$ exactly one odd $m\in[0,2^{k})$ has $\val(a^{r}m-1)\ge k$, and the induced
+valuation law is $\mathrm{Geom}(1/2)$ with mean $2$, independent of $a$ and $r$.
+\end{remark}
+
+\section{Formalisation}
+The statement and proof are formalised in Lean~4:
+\begin{itemize}[nosep]
+  \item \texttt{unique\_inverse\_mod} --- uniqueness of the inverse of $3^{r}$ mod $2^{k}$;
+  \item \texttt{modular\_solution\_odd} --- the solution is odd;
+  \item \texttt{geometric\_distribution\_informal} --- Theorem~\ref{thm:main} itself, stated
+        as the exact cardinality
+        $\bigl|\{m<2^{k}:m\text{ odd},\ k\le\val(3^{r}m-1)\}\bigr|=1$. (The suffix is a
+        historical misnomer: the statement is fully formal.)
+\end{itemize}
+It builds with \texttt{lake build CollatzProof.KodamaCollatz}, and \texttt{\#print axioms}
+reports exactly \texttt{[propext, Classical.choice, Quot.sound]} for all three --- the
+ambient kernel axioms only, no \texttt{sorry} and no custom axioms. The audit is kept as
+\texttt{CollatzProof/AxiomAudit.lean} so that it re-runs on every build.
+Corollary~\ref{cor:geom} is the elementary counting consequence and is not separately
+formalised.
+
+\section{Why it matters, and what it does not give}
+In the study of $3x+1$-type maps the accelerated step is
+$x\mapsto(3x+1)/2^{\val(3x+1)}$, and the heuristic ``$\mathbb{E}[\val]=2$, hence the expected
+factor per step is $3/4<1$'' is standard. Corollary~\ref{cor:geom} is the exact statement
+behind that heuristic: the valuations really are $\mathrm{Geom}(1/2)$ when the argument is
+equidistributed over odd residues.
+
+\begin{remark}[Scope]
+This is a statement about \emph{uniformly distributed} residues. A single deterministic orbit
+is not a random sample: its valuations are fixed, not drawn. Consequently
+Corollary~\ref{cor:geom} does \emph{not} imply that any particular orbit contracts, and it
+implies nothing about the Collatz conjecture. That a negative average drift need not decide a
+deterministic orbit is shown concretely by the divergent map $\lfloor\sqrt2\,n+4\rfloor$ of
+Alth\"ofer--Zipproth~\cite{az}.
+\end{remark}
+
+\section*{Reproducibility}
+The counting statement is re-checked by \texttt{tools/verify\_for\_papers.py}; the Lean items
+build with \texttt{lake build}.
+
+\section*{Acknowledgement}
+AI-assisted; every claim was verified by exact computation or Lean's kernel before inclusion.
+
+\begin{thebibliography}{9}
+\bibitem{lagarias} J.~C. Lagarias, \emph{The $3x+1$ problem and its generalizations},
+Amer. Math. Monthly \textbf{92} (1985), 3--23.
+\bibitem{terras} R.~Terras, \emph{A stopping time problem on the positive integers},
+Acta Arith. \textbf{30} (1976), 241--252.
+\bibitem{az} I.~Alth\"ofer, T.~Zipproth, \emph{Divergence in a Collatz-type recursion},
+preprint, August 2025.
+\bibitem{mathlib} The mathlib Community, \emph{The Lean mathematical library}, CPP 2020.
+\end{thebibliography}
+\end{document}

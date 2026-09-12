@@ -1,0 +1,13 @@
+{
+  "id": "X-mod24",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "REFUTADO: «Collatz demostrado por autómata finito mod 24». La tabla publicada tiene 1677 contraejemplos entre los impares x<4000; el menor es x=9. x=1 y x=25 son la misma clase y step da 1 vs 19.",
+  "evidencia": "python main.py --verificar T11  (T11 lo refuta para TODO módulo)",
+  "rango": "impares x < 4000",
+  "hipotesis": null,
+  "relacionado": [
+    "T11"
+  ],
+  "fecha": "2026-07-20"
+}

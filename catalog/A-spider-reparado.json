@@ -1,0 +1,11 @@
+{
+  "id": "A-spider-reparado",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "El spider llevaba inutilizado contra OEIS por dos fallos: (1) no mandaba User-Agent y OEIS respondía 403 Forbidden; (2) parseaba solo {'results': [...]} cuando OEIS ya devuelve una lista pelada, y `null` cuando no hay coincidencias se tomaba como error de formato. Corregidos y con tests de los tres formatos. arXiv sí funcionaba: consultado sobre NL devuelve papers directamente pertinentes.",
+  "evidencia": "python -m unittest tests.test_spider",
+  "rango": "OEIS y arXiv",
+  "hipotesis": null,
+  "relacionado": [],
+  "fecha": "2026-07-20"
+}

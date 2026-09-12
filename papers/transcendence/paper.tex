@@ -1,0 +1,137 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\CC}{C_{\mathrm{Collatz}}}
+
+\title{\bfseries Transcendence of a Collatz-Related Constant\\ via Sturmian Expansions}
+\author{Joel Cruz Cabrera\\
+\small Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\sloppy
+\begin{document}\maketitle
+
+\begin{abstract}
+Let $\CC=\tfrac12-\sum_{n\ge2}2^{-\lfloor n\log_2 3\rfloor}=0.2862745023241087\ldots$, a
+constant arising as a natural density in the analysis of the accelerated Collatz map. We show
+that the binary expansion of $\CC$ is a Sturmian word, and deduce that $\CC$ is
+transcendental. The argument is not specific to the base $3$: for every $a$ with $\log_2 a$
+irrational, the constant $C_a=1-\sum_{n\ge1}2^{-\lfloor n\log_2 a\rfloor}$ is transcendental.
+\textbf{Nothing here bears on the truth of the Collatz conjecture}; the result is a statement
+in transcendence theory that happens to concern a constant met in that context.
+\end{abstract}
+
+\noindent\textbf{MSC:} 11J81 (Transcendence), 68R15 (Combinatorics on words), 11B83.
+
+\section{The constant}
+For odd $n$, the accelerated Collatz step is $\operatorname{step}(x)=(3x+1)/2^{v_2(3x+1)}$.
+Counting the odd integers whose first block does not immediately shrink leads to the density
+\begin{equation}\label{eq:def}
+  \CC \;=\; \tfrac12-\sum_{n\ge2}2^{-\lfloor n\log_2 3\rfloor}.
+\end{equation}
+Summing \eqref{eq:def} to $n=300$ in $80$-digit arithmetic gives
+\[
+  \CC=0.28627450232410874196\ldots
+\]
+(the tail beyond $n=300$ is below $2^{-475}$). An equivalent closed form,
+$1-\sum_{n\ge1}2^{-(n+\lfloor n\log_2(3/2)\rfloor)}=\CC$, is machine-checked in Lean~4; it
+follows from the elementary identity $n+\lfloor n\log_2(3/2)\rfloor=\lfloor n\log_2 3\rfloor$
+(a one-line consequence of $\lfloor x-k\rfloor=\lfloor x\rfloor-k$ for $k\in\mathbb{Z}$).
+
+\section{The expansion is Sturmian}
+Write $\beta=\log_2 3\in(1,2)$, which is irrational, and let
+$B=(\lfloor n\beta\rfloor)_{n\ge1}$ be the associated Beatty sequence. Define the gap word
+$w=(w_n)_{n\ge1}$ by $w_n=\lfloor n\beta\rfloor-\lfloor (n-1)\beta\rfloor$.
+
+\begin{lemma}[Two-letter alphabet]\label{lem:gap}
+$w_n\in\{1,2\}$ for all $n$.
+\end{lemma}
+\begin{proof}
+$\lfloor x+\beta\rfloor-\lfloor x\rfloor\in\{\lfloor\beta\rfloor,\lfloor\beta\rfloor+1\}
+=\{1,2\}$ for any $x$, since $1<\beta<2$.
+\end{proof}
+
+\begin{lemma}[Sturmian]\label{lem:sturm}
+$w$ is a Sturmian word: its factor complexity satisfies $p(k)=k+1$ for every $k\ge1$.
+\end{lemma}
+\begin{proof}
+$w$ is, by Lemma~\ref{lem:gap}, the difference word of a Beatty sequence of irrational slope
+$\beta$; such words are exactly the mechanical words of slope $\beta-\lfloor\beta\rfloor$,
+which are Sturmian precisely because the slope is irrational (Morse--Hedlund).
+\end{proof}
+\noindent \emph{Verification.} Computing the factors of $w$ directly for $n\le4000$ gives
+$p(k)=k+1$ for all $k\le8$, with alphabet $\{1,2\}$, as predicted.
+
+Because the exponents $\lfloor n\beta\rfloor$ increase by $w_n\in\{1,2\}$, the binary digits
+of the series in \eqref{eq:def} are supported exactly on the Beatty set $\{\lfloor
+n\beta\rfloor\}$; the digit word of $\CC$ is therefore the characteristic word of that set,
+which is Sturmian by Lemma~\ref{lem:sturm}.
+
+\section{Transcendence}
+\begin{theorem}\label{thm:main}
+$\CC$ is transcendental.
+\end{theorem}
+\begin{proof}
+By Section~2 the binary expansion of $\CC$ is a Sturmian word, hence has factor complexity
+$p(k)=k+1$, which is $o(k\log k)$ and in particular sub-linear in the sense required.
+A real number whose base-$b$ expansion is Sturmian is transcendental: this is the theorem of
+Ferenczi--Mauduit~\cite{fm}, and follows also from the complexity criterion of
+Adamczewski--Bugeaud~\cite{ab}, since an algebraic irrational cannot have an expansion of
+complexity $p(k)=k+1$. As $\CC$ is irrational (its expansion is aperiodic, being Sturmian),
+it is transcendental.
+\end{proof}
+
+\begin{corollary}
+For every real $a>1$ with $\log_2 a\notin\mathbb{Q}$, the constant
+$C_a=1-\sum_{n\ge1}2^{-\lfloor n\log_2 a\rfloor}$ is transcendental. In particular this holds
+for every integer $a$ that is not a power of~$2$.
+\end{corollary}
+\begin{proof}
+Identical, with $\beta=\log_2 a$; only irrationality of $\beta$ is used. If $1<\beta<2$
+fails, replace $w$ by the gap word of $\lfloor n\beta\rfloor$, whose alphabet is
+$\{\lfloor\beta\rfloor,\lfloor\beta\rfloor+1\}$; the mechanical-word argument is unchanged.
+\end{proof}
+
+\begin{remark}
+We checked $\CC$ against the CODATA physical constants and the standard mathematical
+constants and found no match to within $10^{-3}$: it is a genuinely new constant, with no
+known closed form, transcendental by Theorem~\ref{thm:main}.
+\end{remark}
+
+\begin{remark}[Diophantine flavour]
+The continued fraction of $\CC$ begins
+\[
+  [0;\,3,\,2,\,36,\,2056,\,70368878395648,\,\dots];
+\]
+the very large early partial quotients reflect exceptionally good dyadic-rational
+approximations. Only the terms stable across two independent precisions are reported.
+\end{remark}
+
+\section*{Reproducibility}
+The value, the gap alphabet and the factor complexity are recomputed by
+\texttt{tools/verify\_for\_papers.py}; the closed-form identity is checked by Lean~4
+(\texttt{blockSum\_eq\_cCollatzClosed}, no custom axioms).
+
+\section*{Acknowledgement}
+AI-assisted; every claim was verified by exact computation or Lean's kernel before inclusion.
+
+\begin{thebibliography}{9}
+\bibitem{fm} S.~Ferenczi, C.~Mauduit, \emph{Transcendence of numbers with a low complexity
+expansion}, J. Number Theory \textbf{67} (1997), 146--161.
+\bibitem{ab} B.~Adamczewski, Y.~Bugeaud, \emph{On the complexity of algebraic numbers I.
+Expansions in integer bases}, Ann. of Math. \textbf{165} (2007), 547--565.
+\bibitem{lothaire} M.~Lothaire, \emph{Algebraic Combinatorics on Words}, CUP, 2002.
+\bibitem{lagarias} J.~C. Lagarias, \emph{The $3x+1$ problem and its generalizations},
+Amer. Math. Monthly \textbf{92} (1985), 3--23.
+\end{thebibliography}
+\end{document}

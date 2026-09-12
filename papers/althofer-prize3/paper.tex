@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{observation}[proposition]{Observation}
+\theoremstyle{definition}
+\newtheorem{remark}[proposition]{Remark}
+\newcommand{\op}{\operatorname{odd\_part}}
+\newcommand{\val}{\operatorname{v}_2}
+\sloppy
+
+\title{\bfseries The two-player $3n\pm1$ game (Alth\"ofer Prize~3):\\
+a retrograde analysis and a limitative result}
+\author{Joel Cruz Cabrera\\
+\small Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+I study the two-player impartial game on odd integers in which a move sends $n$ to
+$\op(3n+1)$ or $\op(3n-1)$ and the player who moves to $1$ wins (Alth\"ofer Prize~3). I do
+\textbf{not} solve the game. I report two things I can back with exact computation. First, a
+Zermelo retrograde analysis over all odd $n\le5\times10^{5}$: $73.0\%$ of positions are
+resolved, split $61.0\%$ WIN / $39.0\%$ LOSE, with maximal optimal depth $79$, mean $32.7$,
+and --- as it must be --- every WIN position has at least one LOSE child ($0$ exceptions).
+Second, a \emph{limitative} result: the WIN/LOSE label carries \textbf{no $2$-adic residue
+structure}. Among the residue classes modulo $2^{j}$ there is not a single ``pure'' class
+(all-WIN or all-LOSE) for any $j\le12$ --- $0$ of $4096$ at $j=12$. This is in sharp contrast
+with the \emph{deterministic} accelerated Collatz map, whose descent behaviour \emph{does}
+split into residue classes (I have $197$ such classes machine-certified in Lean~4). The
+consequence is concrete: no ranking function that reads only a bounded number of low bits of
+$n$ can decide this game.
+\end{abstract}
+
+\section{The game}
+
+On the odd integers, a position $n>1$ has two moves,
+\[
+  n\ \longmapsto\ \op(3n+1)\qquad\text{or}\qquad n\ \longmapsto\ \op(3n-1),
+\]
+where $\op(x)=x/2^{\val(x)}$. The position $1$ is terminal; the player who moves to $1$ wins.
+The game is \emph{impartial} (both players share the same two moves from any position), so by
+Zermelo's theorem every position is either an $N$-position (the player to move wins under
+optimal play; ``WIN'') or a $P$-position (``LOSE''), computed by backward induction from $1$:
+\begin{itemize}[nosep]
+  \item $1$ is a $P$-position (LOSE for the player to move);
+  \item a position with \emph{some} move to a $P$-position is $N$ (WIN);
+  \item a position \emph{all} of whose moves lead to $N$-positions is $P$ (LOSE).
+\end{itemize}
+
+\begin{observation}[At least one move shrinks]\label{obs:down}
+For every odd $n>1$, exactly one of $3n+1,3n-1$ is $\equiv2\pmod4$ and the other
+$\equiv0\pmod4$. Hence one move goes ``up'' by a factor $\approx\tfrac32$ and the other
+``down'' by a factor $3/2^{k}$ with $k\ge2$: at least one legal move strictly decreases $n$.
+So every orbit under free play can be driven towards $1$, and the game is well-founded.
+\end{observation}
+
+\section{Retrograde analysis}
+
+I ran the exact backward induction over all odd $n\le N=5\times10^{5}$. Moves may leave the
+box $[1,N]$; a position whose analysis needs a value outside the box stays unresolved. This is
+the coverage figure, not a defect of the method.
+
+\begin{table}[ht]\centering
+\begin{tabular}{l r}
+\toprule
+odd positions $n\le5\times10^{5}$ & $250{,}000$\\
+resolved & $182{,}559\ (73.0\%)$\\
+\quad WIN ($N$) & $111{,}378\ (61.0\%\text{ of resolved})$\\
+\quad LOSE ($P$) & $71{,}181\ (39.0\%)$\\
+maximal optimal depth (over WIN) & $79$\\
+mean optimal depth (over WIN) & $32.7$\\
+WIN positions with no LOSE child & $0$\\
+\bottomrule
+\end{tabular}
+\caption{Zermelo retrograde analysis of the $3n\pm1$ game.}
+\end{table}
+
+\noindent The last row is the structural sanity check: a WIN position \emph{must} have a move
+to a LOSE position, and it does, in all $111{,}378$ cases. The depth is the number of moves to
+the end under optimal play (the winner finishes fast, the loser stalls); depth $79$ is the
+longest optimal line I found.
+
+\begin{remark}[On modelling]
+This is a \emph{two-player} game; the relevant quantity is the Zermelo $N/P$ label and the
+optimal depth, not the length of a shortest path to $1$. A shortest-path (solitaire) reading
+gives a different, smaller depth distribution and answers a different question. The numbers
+above are from the two-player retrograde analysis.
+\end{remark}
+
+\section{The limitative result: no $2$-adic structure}
+
+The natural first attempt at Prize~3 is to look for a \emph{ranking}: a function $\rho(n)$ that
+some player can force to decrease, or equivalently a description of the $N/P$ label by simple
+arithmetic of $n$. For the \emph{deterministic} accelerated Collatz map this strategy works in
+part --- the descent behaviour splits into residue classes modulo powers of $2$ (e.g.\
+$n\equiv1\pmod4$ descends in one step), and I have $197$ such minimal descent classes
+($1399$ theorems) machine-certified in Lean~4. One might hope the game label is similarly
+$2$-adic.
+
+\begin{proposition}[No pure residue class]\label{prop:nostructure}
+For every $j\le12$, \emph{not one} of the $2^{j}$ residue classes modulo $2^{j}$ is pure: each
+class that occurs contains both WIN and LOSE positions. In particular at $j=12$, $0$ of the
+$4096$ classes are pure.
+\end{proposition}
+
+\noindent This is an exhaustive computation over the resolved positions $n\le5\times10^{5}$;
+the LOSE positions are moreover equidistributed modulo $3$, $4$ and $8$. The contrast with the
+deterministic map is the whole point:
+
+\begin{center}
+\begin{tabular}{l c c}
+\toprule
+ & deterministic Collatz descent & the $3n\pm1$ \emph{game} label\\\midrule
+residue classes mod $2^{j}$ & split cleanly (197 certified) & \textbf{0 pure}, every $j\le12$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{proposition}[Consequence]\label{prop:consequence}
+No ranking function that depends only on $n\bmod2^{j}$ (for any fixed $j\le12$) can decide the
+WIN/LOSE label of the game. Any residue-based strategy of bounded $2$-adic depth is therefore
+ruled out.
+\end{proposition}
+\begin{proof}
+If the label were a function of $n\bmod2^{j}$, every class modulo $2^{j}$ would be pure. By
+Proposition~\ref{prop:nostructure} none is, for any $j\le12$.
+\end{proof}
+
+\noindent The only ranking I found that does decrease is the game depth $d(n)$ itself --- but
+that is circular, since $d$ is \emph{defined} by solving the game. Every non-circular residue
+ranking I tried (by $n$, by bit-length, by popcount, by $\log_2n+r(n)$) fails on a positive
+fraction of positions.
+
+\section{What I claim, and what I do not}
+
+\begin{itemize}[nosep]
+  \item I do \textbf{not} solve Prize~3. The game is open.
+  \item The retrograde numbers ($73.0\%$, $79$, $32.7$, structural check) are exact over
+        $n\le5\times10^{5}$.
+  \item Proposition~\ref{prop:nostructure} is an exhaustive check to $j\le12$; I state it with
+        that range, not as ``for all $j$''. It is strong evidence that the game has no
+        finite $2$-adic structure, and it closes off the residue-ranking approach up to that
+        depth.
+  \item Observation~\ref{obs:down} (at least one move shrinks) is proved.
+\end{itemize}
+
+I would value your view on whether the absence of $2$-adic structure is the expected state of
+affairs for this game, or whether it points to where a solution must \emph{not} be looked for.
+
+\section*{Reproducibility}
+All numbers are regenerated by a single self-contained script
+(\texttt{verify\_prize3.py}); the $197$ certified Collatz descent classes build in Lean~4
+with \texttt{lake build} and pass \texttt{\#print axioms} with kernel-only axioms.
+
+\section*{Acknowledgement}
+This work is AI-assisted; every number reported here was regenerated by exact computation
+before inclusion, and the modelling was corrected (two-player retrograde analysis, not
+shortest path) after an initial mistake.
+
+\begin{thebibliography}{9}
+\bibitem{althofer} I.~Alth\"ofer, \emph{Collatz prizes},
+\url{https://althofer.de/collatz-prizes.html}.
+\bibitem{lagarias} J.~C. Lagarias (ed.), \emph{The Ultimate Challenge: The $3x+1$ Problem},
+American Mathematical Society, 2010.
+\end{thebibliography}
+\end{document}

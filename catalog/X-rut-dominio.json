@@ -1,0 +1,11 @@
+{
+  "id": "X-rut-dominio",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "REGRESIÓN RECURRENTE (3ª aparición): el universo forjaba con la maquinaria 2-ádica sin mirar su dominio, así que un universo de Hodge producía conjeturas de Collatz. Corregido con enrutado por dominio en usecases/avanzar.py y 4 tests que lo vigilan.",
+  "evidencia": "python -m unittest tests.test_avanzar.TestEnrutadoPorDominio",
+  "rango": null,
+  "hipotesis": "¿Basta con aislar los observables, o hay que enrutar también la forja?",
+  "relacionado": [],
+  "fecha": "2026-07-20"
+}

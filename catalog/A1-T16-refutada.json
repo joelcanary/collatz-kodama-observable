@@ -1,0 +1,14 @@
+{
+  "id": "A1-T16-refutada",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "REFUTADA la forma concreta de T16: ρ(j) = ⌊2^j·C_Collatz⌋ + δ(j) con δ acotada. Calculado exactamente con C en Fraction, δ va de +2 (j=3) a −268448 (j=20): no es una corrección, es divergencia. ρ(j) NO crece como 2^j·C — los ratios ρ(j+1)/ρ(j) oscilan entre 1.44 y 1.90, muy por debajo de 2.",
+  "evidencia": "python research/exploraciones/rho_vs_ccollatz.py",
+  "rango": "j = 3..20 (los 18 términos disponibles de ρ)",
+  "hipotesis": "Pregunta abierta A1: ¿tiene ρ(j) forma cerrada vía C_Collatz?",
+  "relacionado": [
+    "T13",
+    "N1"
+  ],
+  "fecha": "2026-07-20"
+}

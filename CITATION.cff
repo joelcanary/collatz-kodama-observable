@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use these results, please cite this repository (and the individual papers in papers/)."
+title: "Collatz-type dynamics: exact results, a structural note, and the Kodama observable (with withdrawn claims)"
+authors:
+  - family-names: "Cruz Cabrera"
+    given-names: "Joel"
+    orcid: "https://orcid.org/0009-0005-4048-1237"
+year: 2026
+license: Apache-2.0
+repository-code: "https://github.com/joelcanary/collatz-exact-results"
+keywords:
+  - Collatz map
+  - 2-adic valuation
+  - Fermat-type bases
+  - Sturmian words
+  - transcendence
+  - Lean 4
+  - experimental mathematics

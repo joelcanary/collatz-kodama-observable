@@ -1,0 +1,56 @@
+To:      The Editors, Experimental Mathematics
+Subject: Submission — "Three Exact Results Arising from Collatz-Type Dynamics"
+
+Dear Editors,
+
+I submit for your consideration the enclosed paper, "Three Exact Results Arising from
+Collatz-Type Dynamics: Valuation Equidistribution, Fermat Bases, and a Transcendental
+Density Constant" (7 pages).
+
+Why Experimental Mathematics. All three results began as computational observations while
+studying the accelerated Collatz map, and were then settled — proved outright, reduced to
+a known criterion, or formalised. The paper is written in the spirit your journal asks
+for: the role of the computer is stated plainly, every numerical claim is reproducible
+from a single enclosed script (verify.py), and two of the three results are additionally
+machine-checked in Lean 4 (the kernel accepts them with no `sorry` and only the ambient
+axioms). I regard machine-checking as the appropriate standard of evidence when the source
+of a conjecture is itself a machine.
+
+What the paper does and does not claim. It does NOT address the Collatz conjecture, and
+says so repeatedly. Each of the three results stands whether or not the conjecture is true:
+
+  (i)   an exact 2-adic law for the step valuations: for every odd base a,
+        v2(a*n+1) >= k  iff  n = -a^{-1} (mod 2^k). Hence the valuation is Geom(1/2) with
+        mean 2 and variance 2, independently of a, and the two valuations of the two-sided
+        step 3n+-1 are anti-correlated with covariance exactly -1. (Lean-certified.)
+  (ii)  the maps x -> a*x+1 admit closed-form polynomial orbits iff a-1 is a power of 2,
+        i.e. a = 2^e+1. Both directions in the kernel. (Lean-certified.)
+  (iii) the density constant C = 0.28627450232410874... has a Sturmian binary expansion
+        and is therefore transcendental, via Ferenczi-Mauduit / Adamczewski-Bugeaud.
+
+On novelty, honestly. These are elementary results. Their value is that they are exact
+(not asymptotic or numerical), unified under one mechanism (2 is a unit), and
+machine-certified — and that (iii) exhibits a concrete, previously unnamed transcendental
+constant with a clean Sturmian structure. The paper also records, with explicit
+counterexamples, a limitative fact that is easy to reach experimentally and get wrong: the
+step valuation is a function of no fixed residue of x, so no finite automaton on residues
+models the dynamics. I include this because the error recurs in the informal literature
+and I think stating it precisely has value.
+
+Disclosure. The work was AI-assisted. Every statement was verified by exact computation or
+by Lean's kernel before inclusion, and every candidate that failed verification was
+discarded; I mention this plainly rather than leave it implicit.
+
+Data and code. The enclosed verify.py regenerates every number in the paper (it prints
+[OK]/[FAIL] per claim and runs in under a minute). The Lean development is available and
+builds with `lake build`; `#print axioms` is documented in the paper.
+
+The paper is not under consideration elsewhere. Thank you for your time.
+
+Sincerely,
+Joel Cruz Cabrera
+Santa Cruz de Tenerife, Canary Islands, Spain
+ORCID: 0009-0005-4048-1237
+tf.joel.work@gmail.com
+
+Enclosures: paper.pdf, verify.py

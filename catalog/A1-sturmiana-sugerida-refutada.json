@@ -1,0 +1,15 @@
+{
+  "id": "A1-sturmiana-sugerida-refutada",
+  "problema": "collatz",
+  "nivel": "X",
+  "enunciado": "REFUTA la coincidencia sugerida en A1-sturmiana-sugerida. Ese hallazgo encontro que el patron de huecos (2,1,2,2,1) [restando 1 a los huecos (3,2,3,3,2), primeras 5 duplicaciones exactas de rho(j)] ES factor de la palabra de C_Collatz, pero con su propia advertencia explicita: \"NO ES EVIDENCIA: una palabra Sturmiana tiene p(k)=k+1 factores de longitud k, asi que con solo 5 huecos encontrar uno es lo esperable, no una coincidencia\".\n\nExtendido rho(j) a 27 terminos (A1-extension-j29), el patron crece a 8 huecos: (3,2,3,3,2,3,3,3) -> restando 1: (2,1,2,2,1,2,2,2). Buscado como factor de la palabra de C_Collatz (40 simbolos, research/exploraciones/rho_extension_j30_analisis.py, paso 5): NO aparece en ninguna posicion.\n\nLa propia advertencia de A1-sturmiana-sugerida predecia exactamente este resultado si la conexion era casualidad estadistica y no estructura real: con mas huecos, la coincidencia debia desaparecer. Desaparecio. La intuicion Sturmiana de T16 (alfabeto {2,3} en los huecos) SIGUE viva -- eso se confirmo, no se refuta -- pero la conexion especifica con la palabra de C_Collatz que T16/A1-sturmiana-sugerida insinuaban NO se sostiene.",
+  "evidencia": "python research/exploraciones/rho_extension_j30_analisis.py",
+  "rango": null,
+  "hipotesis": "A1-sturmiana-sugerida: el patron de huecos de rho es literalmente un factor de la palabra de C_Collatz?",
+  "relacionado": [
+    "A1-sturmiana-sugerida",
+    "A1-extension-j29",
+    "A1-T16-refutada"
+  ],
+  "fecha": "2026-07-24"
+}

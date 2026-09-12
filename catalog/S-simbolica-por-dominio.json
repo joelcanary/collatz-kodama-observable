@@ -1,0 +1,13 @@
+{
+  "id": "S-simbolica-por-dominio",
+  "problema": "collatz",
+  "nivel": "H",
+  "enunciado": "Symbolica abstraída: era un alfabeto global fijo con los conceptos de todos los problemas mezclados (nació para Collatz). Ahora cada dominio tiene el SUYO, sembrado y abierto: los símbolos ganan energía con los hallazgos confirmados y nacen símbolos nuevos para los conceptos que reaparecen. Cada problema construye su propia matemática simbólica a partir de lo que descubre.",
+  "evidencia": "python main.py --simbolica",
+  "rango": null,
+  "hipotesis": "¿Puede la capa simbólica dejar de ser de Collatz y volverse de cada problema?",
+  "relacionado": [
+    "X-aislamiento-estructural"
+  ],
+  "fecha": "2026-07-20"
+}

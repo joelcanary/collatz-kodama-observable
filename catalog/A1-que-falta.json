@@ -1,0 +1,14 @@
+{
+  "id": "A1-que-falta",
+  "problema": "collatz",
+  "nivel": "H",
+  "enunciado": "QUÉ DECIDIRÍA A1: el crecimiento de ρ no queda determinado con 18 términos — log2(ρ(j))/j sigue SUBIENDO en j=20 (0.719 → 0.748), así que no converge todavía y no se puede leer el exponente. Con ρ hasta j≈30 se decidiría si el alfabeto de huecos sigue en {2,3} y si log2(ρ)/j converge. Es un cálculo, no un concepto nuevo: es la continuación más barata y concreta de A1.",
+  "evidencia": "python research/exploraciones/rho_vs_ccollatz.py",
+  "rango": null,
+  "hipotesis": null,
+  "relacionado": [
+    "A1-T16-refutada",
+    "A1-sturmiana-sugerida"
+  ],
+  "fecha": "2026-07-20"
+}

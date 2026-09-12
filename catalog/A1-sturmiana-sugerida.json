@@ -1,0 +1,14 @@
+{
+  "id": "A1-sturmiana-sugerida",
+  "problema": "collatz",
+  "nivel": "H",
+  "enunciado": "La INTUICIÓN Sturmiana de T16 sí tiene apoyo, distinto del que se buscaba: las posiciones donde las diferencias de ρ se duplican EXACTAMENTE (2,5,7,10,13,15) tienen huecos (3,2,3,3,2) — alfabeto de DOS letras {2,3}, la firma de una palabra Sturmiana. Restando 1 da (2,1,2,2,1), que es factor de la palabra de huecos de C_Collatz (alfabeto {1,2}). ⚠️ NO ES EVIDENCIA: una palabra Sturmiana tiene p(k)=k+1 factores de longitud k, así que con solo 5 huecos encontrar uno es lo esperable, no una coincidencia. Queda SUGERIDA, no establecida.",
+  "evidencia": "python research/exploraciones/rho_vs_ccollatz.py",
+  "rango": "5 huecos, de j=3..20",
+  "hipotesis": null,
+  "relacionado": [
+    "A1-T16-refutada",
+    "T13"
+  ],
+  "fecha": "2026-07-20"
+}

@@ -1,0 +1,307 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newcommand{\val}{\operatorname{v}_2}
+\newcommand{\step}{\operatorname{step}}
+\sloppy
+
+\title{\bfseries Exact Structure in Accelerated Collatz Dynamics:\\
+Valuation Laws, Orbit Identities, and a\\ Machine-Certified Descent Atlas}
+\author{Joel Cruz Cabrera\\
+\small Programmer --- Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+We collect exact, unconditional structure for the accelerated Collatz map
+$\step(x)=(3x+1)/2^{\val(3x+1)}$ on odd integers: a run-length law identifying
+$\val(x+1)-1$ as the exact number of initial valuation-one steps; an up/down dichotomy and a
+$2$-adic resistance-descent lemma for the two-sided map $3x\pm1$; exact orbit identities and
+a closed form for the logarithmic defect; and a machine-certified atlas of descent classes
+(197 classes / 1399 theorems, Lean~4, kernel-only axioms). We prove two limitative results:
+for no modulus $M$ is $\val(3x+1)$ a function of $x\bmod M$, so no finite automaton on
+residues captures the dynamics
+--- and the atlas method reaches ``almost all $n$'' but provably never all $n$.
+\textbf{This paper does not prove the Collatz conjecture and makes no such claim}; it
+delimits what the present methods can and cannot do.
+\end{abstract}
+
+\noindent\textbf{MSC:} 11B83, 11A07 (Congruences), 37P05 (Arithmetic dynamics), 68V20
+(Formalisation of mathematics).
+
+\section{Setting and scope}
+On the odd integers put $\step(x)=(3x+1)/2^{\val(3x+1)}$, where $\val$ is the $2$-adic
+valuation. For an orbit reaching $1$ with odd iterates $a_1=n,\dots,a_A$ and valuations
+$v_i=\val(3a_i+1)$, write $S=\sum_i v_i$ and $S_i=\sum_{j\le i}v_j$ ($S_0=0$).
+
+Each result carries a status: \textbf{[P]} proved; \textbf{[P-Lean]} additionally
+machine-checked in Lean~4 with kernel-only axioms; \textbf{[V]} exactly verified on a stated
+range with $0$ exceptions; \textbf{[C]} conjecture.
+
+\paragraph{Companion notes.} Two results used here are of independent interest and are
+treated separately: the equidistribution of the valuations~\cite{geom} and the
+characterisation of the bases $a$ for which $ax+1$ has closed-form orbits~\cite{fermat}.
+
+\section{A run-length law}
+\begin{theorem}[$K_0$ law, {\bf[P]}]\label{thm:k0}
+For odd $n$ set $k(n)=\val(n+1)-1$. The orbit of $n$ begins with \emph{exactly} $k(n)$
+consecutive steps of valuation $1$; and if $k(n)=0$ then $\step(n)<n$.
+\end{theorem}
+\begin{proof}
+Write $n=2^{k+1}m-1$ with $m$ odd, $k=k(n)$. Then $3n+1=2(3\cdot2^{k}m-1)$ and
+$3\cdot2^{k}m-1$ is odd exactly when $k\ge1$; hence $v=1$ and $\step(n)=2^{k}(3m)-1$, of the
+same shape with $k$ reduced by one. After $k$ steps the parameter is $0$, where $4\mid3n+1$
+and $\step(n)\le(3n+1)/4<n$ for $n>1$.
+\end{proof}
+\noindent Verified with $0$ exceptions for all odd $n<2\times10^{5}$. The proof uses only
+that $3$ is odd, so it holds verbatim for $ax+1$ with $a$ odd.
+
+\section{The two-sided map $3x\pm1$}
+Each odd $x$ now has two children, $\operatorname{odd\_part}(3x+1)$ and
+$\operatorname{odd\_part}(3x-1)$.
+
+\begin{observation}[Up/down dichotomy, {\bf[V]}]\label{obs:ud}
+For every odd $n\ge3$, $3n+1$ and $3n-1$ are consecutive even numbers, so exactly one is
+$\equiv0\pmod4$ (valuation $\ge2$) and the other $\equiv2\pmod4$ (valuation $1$). Hence one
+child is $\tfrac{3n\pm1}{2}>n$ (the \emph{up} child, factor $\approx\tfrac32$) and the other
+is $<\tfrac{3n+1}{4}<n$ (the \emph{down} child, factor $3/2^{k}$, $k\ge2$). Consequently
+$\val(3n+1)+\val(3n-1)\ge3$, never $2$.
+\end{observation}
+\noindent Verified with $0$ exceptions for all odd $n\le2\times10^{5}$.
+
+\begin{theorem}[$2$-adic resistance descends, {\bf[P]}]\label{thm:res}
+Let $r(n)=\max(\val(n-1),\val(n+1))$ be the $2$-adic distance to $\pm1$ (so $r\ge2$ for odd
+$n$). For every odd $n$ with $r(n)=r\ge4$, the two children have resistance \emph{exactly}
+$r-1$ (up child) and $r-2$ (down child). Hence $r$ strictly decreases while $r\ge4$: from
+resistance $r$ the walk returns to $r\le3$ within $r$ steps.
+\end{theorem}
+\begin{proof}
+Take $n=1+2^rm$, $m$ odd (the case $n\equiv-1$ is symmetric). Then
+$3n+1=4(1+3\cdot2^{r-2}m)$, whose odd part $d$ has $d-1=3\cdot2^{r-2}m$, so
+$\val(d-1)=r-2$ while $\val(d+1)=1$; hence $r(d)=r-2$. And $3n-1=2(1+3\cdot2^{r-1}m)$, whose
+odd part $u$ has $\val(u-1)=r-1$ and $\val(u+1)=1$; hence $r(u)=r-1$.
+\end{proof}
+\noindent Verified with $0$ exceptions for all odd $n\le2\times10^{6}$.
+
+\section{Orbit identities}
+\begin{proposition}[Exact orbit identity, {\bf[P]}]\label{prop:series}
+$\displaystyle 2^{S}=3^{A}n+\sum_{i=0}^{A-1}3^{A-1-i}2^{S_i}$.
+\end{proposition}
+\noindent The classical relation behind the $3^A$-versus-$2^S$ bookkeeping
+(cf.~\cite{lagarias}); restated because the next result depends on it. Verified with $0$
+exceptions for odd $n<2\times10^4$.
+
+\begin{proposition}[Logarithmic defect in closed form, {\bf[P]}]\label{prop:delta}
+With $\delta:=S-A\log_23-\log_2n$, we have
+$\delta=\sum_{i=1}^{A}\log_2\bigl(1+\tfrac1{3a_i}\bigr)$; in particular $\delta>0$ always.
+\end{proposition}
+\begin{proof}
+Take $\log_2$ of $2^{v_i}a_{i+1}=3a_i(1+\tfrac1{3a_i})$ and sum; the $\log_2a_i$ telescope.
+\end{proof}
+\noindent Verified to $|\cdot|<1.5\times10^{-14}$ for odd $n<4000$.
+
+\begin{proposition}[Predecessor law mod 3, {\bf[P]}]\label{prop:mod3}
+Let $a_{i-1}\mapsto a_i=\step(a_{i-1})$ be consecutive odd terms, $v_{i-1}=\val(3a_{i-1}+1)$.
+Then
+\begin{align*}
+  a_i\equiv0\ (\mathrm{mod}\ 3)\ &\Longrightarrow\ a_i\text{ has no odd predecessor},\\
+  v_{i-1}\text{ even}\ &\Longleftrightarrow\ a_i\equiv1\ (\mathrm{mod}\ 3),\\
+  v_{i-1}\text{ odd}\ &\Longleftrightarrow\ a_i\equiv2\ (\mathrm{mod}\ 3).
+\end{align*}
+\end{proposition}
+\begin{proof}
+Inverting the step, $a_{i-1}=\bigl(2^{v_{i-1}}a_i-1\bigr)/3$ must be a positive integer, so
+$2^{v_{i-1}}a_i\equiv1\pmod3$. As $2\equiv-1\pmod3$ this reads
+$(-1)^{v_{i-1}}a_i\equiv1\pmod3$. For $a_i\equiv0$ there is no solution; for $a_i\equiv1$ it
+forces $(-1)^{v_{i-1}}=1$, i.e.\ $v_{i-1}$ even; for $a_i\equiv2\equiv-1$ it forces
+$v_{i-1}$ odd.
+\end{proof}
+\noindent Verified on $4{,}041{,}077$ consecutive pairs (all odd $n<2\times10^5$), $0$
+violations.
+
+\begin{corollary}[Last-pair parity, {\bf[P]}]\label{cor:lastpair}
+Let $a_A$ be the last odd term, $\step(a_A)=1$. Then $v_A$ is even and
+$a_A=(2^{v_A}-1)/3$. Writing $v_A=2m$, we have $a_A=(4^m-1)/3=\sum_{i<m}4^i\equiv m\pmod3$,
+and hence for $A\ge2$:
+\[
+  v_A\equiv2\!\!\pmod 6\Rightarrow v_{A-1}\text{ even},\qquad
+  v_A\equiv4\!\!\pmod 6\Rightarrow v_{A-1}\text{ odd},
+\]
+while $v_A\equiv0\pmod 6$ forces $a_A\equiv0\pmod3$, so $a_A$ has no predecessor and $A=1$.
+\end{corollary}
+\begin{proof}
+$3a_A+1=2^{v_A}$ needs $2^{v_A}\equiv1\pmod3$, i.e.\ $v_A$ even. The rest is
+Proposition~\ref{prop:mod3} with $a_A\equiv m\pmod 3$, since $m\equiv1,2,0\pmod3$
+corresponds to $v_A\equiv2,4,0\pmod6$.
+\end{proof}
+\noindent This settles what was previously recorded only as an empirical observation, and
+explains it: the ``modulus $6$'' is modulus $3$ in disguise, the factor $2$ coming from
+$v_A=2m$. The admissible last terms are $a_A\in\{1,5,21,85,341,\dots\}=(4^m-1)/3$, and those
+with $3\mid a_A$ (i.e.\ $21,1365,\dots$) are orbit \emph{starts}: nothing maps to them.
+
+\section{No finite-residue reduction}\label{sec:nofinite}
+\begin{proposition}[{\bf[P]}]\label{prop:nofinite}
+For every modulus $M$, the valuation $\val(3x+1)$ is \emph{not} a function of $x\bmod M$.
+\end{proposition}
+\begin{proof}
+Write $M=2^{s}M'$ with $M'$ odd and let $c=-3^{-1}\bmod 2^{s+1}$, which is odd. Every
+$x\equiv c\pmod{2^{s}}$ has $\val(3x+1)\ge s$, but the exact value is decided by the binary
+digits of $x$ above position $s$ --- which $x\bmod M$ does not see. By the Chinese Remainder
+Theorem pick odd $x\equiv y\pmod{M}$ with $3x+1\equiv2^{s}\pmod{2^{s+1}}$ and
+$3y+1\equiv0\pmod{2^{s+1}}$; the systems are compatible since they constrain the $2$-part and
+the odd part $M'$ at coprime places. Then $\val(3x+1)=s<s+1\le\val(3y+1)$.
+\end{proof}
+\noindent So $\val(3x+1)\ge s$ is decided by $x\bmod2^{s}$ but $\val(3x+1)=s$ exactly is not:
+the valuation sequence requires unbounded $2$-adic precision and the dynamics is \emph{not} a
+finite automaton on residues. At $M=24$, among the $2000$ odd $x<4000$: $500$ have
+$\val(3x+1)\ne\val(3(x+24)+1)$ (least witness $x=5$, $y=29$: $\val(16)=4\ne3=\val(88)$), and
+$1959$ have $\step(x)\not\equiv\step(x+24)\pmod{24}$ (least witness $x=1$, $y=25$:
+$\step(1)=1$, $\step(25)=19$). We record this because a finite-residue reduction is a
+recurring error here: any argument reducing the dynamics to finitely many residue classes is
+incorrect, and checking only the representatives $x=1,3,\dots,M-1$ proves nothing --- $x=1$
+passes where $x=25$, in the same class, fails.
+
+\section{A machine-certified descent atlas, {\bf[P-Lean]}}
+Call $n\equiv r\pmod{2^j}$ a \emph{descent class} if there is $t=t(r,j)$ with
+$\step^{t}(n)<n$ for every $n$ in the class. Since the first $j$ binary digits determine the
+first valuations, such a statement unrolls into a finite algebraic identity and is provable
+mechanically. Classical examples: $n\equiv1\pmod4$ ($t=1$), $n\equiv3\pmod{16}$ ($t=2$),
+$n\equiv11,23\pmod{32}$ ($t=3$).
+
+\paragraph{Pipeline.} (i) an exact tree walk enumerates the \emph{minimal} descent classes
+level by level (no sampling, no floating point); (ii) each is compiled to a self-contained
+Lean~4 proof by orbit unrolling; (iii) a certifier runs \texttt{lake build} and inspects
+\texttt{\#print axioms}, accepting a class \emph{only if} the kernel does, with no
+\texttt{sorry} and only the ambient axioms. Current certificate:
+\[
+\begin{aligned}
+  &\texttt{n\_classes}=197, &&\texttt{n\_theorems}=1399,\\
+  &\texttt{lake\_build\_ok}=\texttt{true}, &&\texttt{axioms\_kernel\_only}=\texttt{true}.
+\end{aligned}
+\]
+The pipeline re-derives the classical classes, which serves as a regression test.
+
+\begin{remark}[The certifier is the point]
+Steps (i)--(ii) can and do emit plausible-looking candidates that are wrong; only (iii)
+decides. An unchecked generator will happily produce a document asserting a theorem that does
+not compile. Making the kernel --- not the generator --- the sole authority is the discipline
+that prevents this.
+\end{remark}
+
+\paragraph{Exact descent densities, {\bf[V]}.} The fraction $d(K)$ of odd residues descending
+within $K$ accelerated steps is an exact dyadic rational:
+\[
+\begin{aligned}
+  d(1)&=\tfrac12, & d(2)=d(3)&=\tfrac34, & d(4)=d(5)&=\tfrac78, & d(6)=d(7)&=\tfrac{55}{64},\\
+  d(8)&=\tfrac{115}{128}, & d(9)&=\tfrac{235}{256}, & d(10)&=\tfrac{955}{1024}. & &
+\end{aligned}
+\]
+These are exact (no sampling); the underlying density statement is the classical stopping-time
+result of Terras~\cite{terras}, so we report the values as a re-computation and claim no new
+theorem.
+
+\section{The intrinsic ceiling}
+We must first fix the notion precisely, since ``resistant'' admits several inequivalent
+readings and the counts depend on which one is used.
+
+\begin{definition}\label{def:resist}
+Run the symbolic orbit of the class $r\bmod 2^{j}$ using \emph{only} the $j$ known bits: at
+each step the valuation $\val(3x+1)$ is read off, and the available precision drops by that
+amount. The class is \emph{resistant at level $j$} if the precision is exhausted before the
+orbit drops below $r$ --- i.e.\ the $j$ bits do not decide descent. Let $\rho(j)$ be the
+fraction of odd residues mod $2^{j}$ that are resistant.
+\end{definition}
+
+\begin{table}[ht]\centering
+\begin{tabular}{r r r r}
+\toprule
+$j$ & resistant classes & $\rho(j)$ exact & $\rho(j)$\\\midrule
+$10$ & $91$       & $91/512$        & $0.1777$\\
+$15$ & $1{,}610$  & $805/8192$      & $0.0983$\\
+$20$ & $31{,}732$ & $7933/131072$   & $0.0605$\\
+\bottomrule
+\end{tabular}
+\caption{Resistant classes under Definition~\ref{def:resist}, computed exactly (no
+sampling). The resistant set thins in density but grows without bound in absolute size.}
+\end{table}
+
+\noindent The full exact sequence of resistant counts for $j=3,\dots,20$ is
+\[
+  4,\,6,\,9,\,13,\,21,\,34,\,53,\,91,\,155,\,283,\,509,\,876,\,1610,\,2905,\,5019,\,9247,
+  \,16742,\,31732 .
+\]
+The successive ratios $\rho(j{+}1)/\rho(j)$ do \emph{not} settle: they oscillate
+($0.75,\,0.75,\,0.72,\,0.81,\,0.81,\,0.78,\,0.86,\dots$) with an apparent period of about $3$,
+which is what one expects from the irrational rotation by $\log_{2}3\approx1.585$. Consistent
+with this, the sequence satisfies \emph{no} linear recurrence with constant coefficients of
+order $\le5$ and is not exactly geometric --- both checked over the exact rationals. We
+therefore report the values and refrain from fitting a geometric law to them.
+
+\begin{proposition}[Ceiling, {\bf[P]}]
+Enumerating descent classes establishes the conjecture on a set of odd $n$ of density
+$1-\rho(j)\to1$, hence for \emph{almost all} $n$ --- the Terras regime~\cite{terras},
+sharpened by Tao~\cite{tao} --- but for no finite $j$ does it cover all $n$. No finite
+enumeration of residue classes can prove the Collatz conjecture.
+\end{proposition}
+\noindent Together with Proposition~\ref{prop:nofinite} this delimits the method sharply: not
+only does enumeration fail to terminate, no fixed $2$-adic precision even suffices to define
+the step.
+
+\section{Conjecture}
+\begin{conjecture}[Champion, {\bf[C]}]
+Let $R$ be the normalised observable defined along the orbit of $n$ by $R_0=0$,
+$R_{k+1}=(3R_k+1)/2^{v_k}$. Then $\sup_kR_k$ is maximised, over all odd $n\ge3$, at $n=993$
+and its doublings $993\cdot2^k$.
+\end{conjecture}
+\noindent Consistent with an exhaustive scan; it is a universal statement over an infinite set
+and is \emph{not} proved. Reported as a conjecture only.
+
+\section*{What is not claimed}
+\begin{itemize}[nosep]
+  \item No proof of the Collatz conjecture.
+  \item No finite-automaton or finite-residue reduction (Proposition~\ref{prop:nofinite}
+        shows this is impossible).
+  \item No claim that the champion conjecture is a theorem; it is checked on a finite range
+        only.
+\end{itemize}
+
+\section*{Reproducibility}
+All counts are regenerated by \texttt{tools/verify\_discoveries.py} and
+\texttt{tools/verify\_for\_papers.py}; the Lean development builds with \texttt{lake build},
+and the certifier rewrites a machine-readable certificate.
+
+\section*{Acknowledgement}
+AI-assisted; every claim was verified by exact computation or by Lean's kernel before
+inclusion, and every claim that failed verification was removed.
+
+\begin{thebibliography}{9}
+\bibitem{geom} J.~Cruz Cabrera, \emph{An exact equidistribution law for the $2$-adic
+valuations of $3^rm-1$}, companion note, 2026.
+\bibitem{fermat} J.~Cruz Cabrera, \emph{Closed-form orbits of the maps $ax+1$: a
+characterisation of Fermat bases}, companion note, 2026.
+\bibitem{lagarias} J.~C. Lagarias, \emph{The $3x+1$ problem and its generalizations},
+Amer. Math. Monthly \textbf{92} (1985), 3--23.
+\bibitem{terras} R.~Terras, \emph{A stopping time problem on the positive integers},
+Acta Arith. \textbf{30} (1976), 241--252.
+\bibitem{tao} T.~Tao, \emph{Almost all orbits of the Collatz map attain almost bounded
+values}, Forum of Mathematics, Pi \textbf{10} (2022).
+\bibitem{az} I.~Alth\"ofer, T.~Zipproth, \emph{Divergence in a Collatz-type recursion},
+preprint, August 2025.
+\bibitem{mathlib} The mathlib Community, \emph{The Lean mathematical library}, CPP 2020.
+\end{thebibliography}
+\end{document}

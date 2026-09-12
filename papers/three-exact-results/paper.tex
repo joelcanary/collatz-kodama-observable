@@ -1,0 +1,493 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}\usepackage{geometry}\usepackage{xcolor}
+\usepackage{hyperref}\usepackage{microtype}\usepackage{enumitem}\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,
+            urlcolor=blue!55!black}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\val}{\operatorname{v}_2}
+\newcommand{\step}{\operatorname{step}}
+\newcommand{\CC}{C_{\mathrm{Collatz}}}
+\sloppy
+
+\title{\bfseries Three Exact Results Arising from Collatz-Type Dynamics:\\
+Valuation Equidistribution, Fermat Bases,\\ and a Transcendental Density Constant}
+\author{Joel Cruz Cabrera\\
+\small Santa Cruz de Tenerife, Canary Islands, Spain\\
+\small\texttt{tf.joel.work@gmail.com}\quad ORCID: 0009-0005-4048-1237}
+\date{July 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+The study of the accelerated Collatz map $\step(x)=(3x+1)/2^{\val(3x+1)}$ throws off
+questions that are not about the Collatz conjecture at all. We isolate three of them and
+settle them completely.
+\emph{(i)} The valuations produced by the accelerated step obey an exact $2$-adic law: for
+every odd base $a$, $\val(an+1)\ge k \iff n\equiv-a^{-1}\pmod{2^{k}}$, so $\val(an+1)$ is
+$\mathrm{Geom}(1/2)$ with mean $2$ and variance $2$, independently of $a$; and the two
+valuations $\val(3n\pm1)$ of the two-sided step are anti-correlated with covariance exactly
+$-1$.
+\emph{(ii)} The map $x\mapsto ax+1$ ($a$ odd) admits closed-form polynomial orbits if and only
+if $a-1$ is a power of $2$, i.e.\ $a=2^{e}+1$ is a Fermat-type base.
+\emph{(iii)} The density constant $\CC=\frac12-\sum_{n\ge2}2^{-\lfloor n\log_{2}3\rfloor}
+=0.2862745023241087\ldots$ has a Sturmian binary expansion and is therefore transcendental;
+so is $C_{a}=1-\sum_{n\ge1}2^{-\lfloor n\log_{2}a\rfloor}$ whenever $\log_{2}a$ is irrational.
+Result (i), and the orbit formula of (ii), are formalised in Lean~4 and machine-checked with
+kernel-only axioms;
+(iii) is verified by exact computation and follows from known transcendence criteria.
+\textbf{None of the three depends on the Collatz conjecture, and none is claimed to advance
+it.} We also record, with explicit witnesses, a limitative fact that is easy to get wrong
+experimentally: for no modulus $M$ is $\val(3x+1)$ a function of $x\bmod M$, so no finite
+automaton on residues can model the dynamics.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Collatz map; $2$-adic valuation; equidistribution; Sturmian
+words; transcendence; Beatty sequences; formalised mathematics; Lean~4.
+
+\noindent\textbf{MSC 2020:} 11B83; 11A07; 11S05; 11J81; 68R15; 68V20; 37P05.
+
+\section{Introduction}
+
+For odd $x$ the \emph{accelerated} (Syracuse) Collatz step is
+\begin{equation}\label{eq:step}
+  \step(x)=\frac{3x+1}{2^{\val(3x+1)}},
+\end{equation}
+where $\val$ denotes the $2$-adic valuation. Whether every orbit reaches $1$ is the Collatz
+conjecture, open since Collatz's 1937 formulation; see Lagarias~\cite{lagarias,lagarias-book}
+for the standard survey, Terras~\cite{terras} for the classical density result, and
+Tao~\cite{tao} for the strongest current ``almost all'' theorem. \textbf{This paper does not
+address the conjecture.}
+
+What it does address is a cluster of questions that arise while studying \eqref{eq:step} but
+whose statements never mention it. Each is settled here, and each stands whether or not the
+conjecture is true:
+
+\begin{enumerate}[label=(\roman*),nosep]
+  \item an exact equidistribution law for the valuations $\val(3^{r}m-1)$
+        (Section~\ref{sec:geom});
+  \item a characterisation of the bases $a$ for which $ax+1$ has closed-form orbits
+        (Section~\ref{sec:fermat});
+  \item the transcendence of a density constant attached to the map
+        (Section~\ref{sec:trans}).
+\end{enumerate}
+
+\paragraph{Method, and why this is experimental mathematics.} All three began as
+computational observations and were then either proved outright or reduced to a known
+criterion. Two of the three are additionally \emph{formalised in Lean~4} and checked by its
+kernel with no \texttt{sorry} and no custom axioms, which we regard as the appropriate
+standard of evidence when the source of a conjecture is a machine. Section~\ref{sec:verif}
+documents the verification, and Section~\ref{sec:nofinite} records --- with explicit
+counterexamples --- a false reduction that is easy to reach experimentally and that we
+believe deserves to be stated plainly in the literature.
+
+\section{An exact equidistribution law}\label{sec:geom}
+
+Throughout this section $m$ ranges over the odd residues modulo $2^{k}$, of which there are
+$2^{k-1}$.
+
+\begin{lemma}[Invertibility]\label{lem:inv}
+$3$ is a unit in $\mathbb{Z}/2^{k}\mathbb{Z}$ for every $k\ge1$; hence $3^{r}$ is a unit and
+$m\mapsto3^{r}m$ permutes $(\mathbb{Z}/2^{k}\mathbb{Z})^{\times}$.
+\end{lemma}
+\begin{proof}
+$\gcd(3,2)=1$, so $3$ is invertible modulo every power of $2$. Units form a group, so $3^{r}$
+is a unit and multiplication by it is a bijection of the unit group.
+\end{proof}
+
+\begin{theorem}[Exact equidistribution]\label{thm:geom}
+Let $r,k\ge1$. There is \emph{exactly one} odd $m\in[0,2^{k})$ with $\val(3^{r}m-1)\ge k$.
+\end{theorem}
+\begin{proof}
+$\val(3^{r}m-1)\ge k$ means $3^{r}m\equiv1\pmod{2^{k}}$, i.e.\ $m\equiv(3^{r})^{-1}
+\pmod{2^{k}}$. By Lemma~\ref{lem:inv} this inverse exists, is unique modulo $2^{k}$, and is
+odd (being a unit). Hence exactly one odd residue satisfies the condition.
+\end{proof}
+
+\begin{corollary}[Geometric law]\label{cor:geom}
+Let $m$ be uniform on the odd residues modulo $2^{k}$. For $1\le j<k$,
+\[
+  \Pr\bigl[\val(3^{r}m-1)=j\bigr]=2^{-j},
+\]
+independently of $r$, and $\Pr[\val\ge k]=2^{-(k-1)}$. Letting $k\to\infty$, the valuation is
+$\mathrm{Geom}(1/2)$ on $\{1,2,\dots\}$ with $\mathbb{E}[\val]=\sum_{j\ge1}j2^{-j}=2$.
+\end{corollary}
+\begin{proof}
+By Theorem~\ref{thm:geom} the odd residues with $\val\ge j$ form a single class modulo
+$2^{j}$, hence a fraction $2^{-(j-1)}$ of the odd residues; likewise $\Pr[\val\ge j+1]
+=2^{-j}$. Subtract. Independence of $r$ is exactly Lemma~\ref{lem:inv}.
+\end{proof}
+
+\begin{remark}[Scope of the base]
+The proof uses only that the base is odd (hence a $2$-adic unit) and that units form a group.
+So for every odd $a$: for all $r,k\ge1$ exactly one odd $m\in[0,2^{k})$ has
+$\val(a^{r}m-1)\ge k$, and the induced law is $\mathrm{Geom}(1/2)$ with mean $2$,
+independently of $a$ and $r$.
+\end{remark}
+
+\begin{remark}[What it does \emph{not} give]\label{rem:scope}
+Corollary~\ref{cor:geom} concerns \emph{uniformly distributed} residues. A single
+deterministic orbit is not a random sample: its valuations are fixed, not drawn. The
+corollary is therefore the exact form of the folklore heuristic ``$\mathbb{E}[\val]=2$, hence
+expected factor $3/4<1$ per step'', but it implies nothing about any particular orbit. That a
+negative average drift need not decide a deterministic orbit is shown concretely by the map
+$n\mapsto\lfloor\sqrt2\,n+4\rfloor$ followed by halving, which Alth\"ofer and
+Zipproth~\cite{az} prove diverges from every odd start.
+\end{remark}
+
+\subsection{The full statistics of the step valuations}\label{sub:stats}
+
+The equidistribution law fixes the first moment. The same elementary machinery pins down the
+whole joint law of the two valuations $v_{+}=\val(3n+1)$ and $v_{-}=\val(3n-1)$ produced by
+one accelerated step, over $n$ uniform on the odd residues modulo $2^{K}$. Every statement
+below is \emph{exact} (a rational, verified as such) and is machine-checked in the sense of
+Section~\ref{sec:verif}; none uses floating point.
+
+\begin{proposition}[Rotation law]\label{prop:rot}
+For every odd $a$ and all $k\ge1$,
+\[
+  \val(an+1)\ge k \iff n\equiv -a^{-1}\pmod{2^{k}},
+\]
+a single residue class. Hence $\Pr[\val(an+1)=k]=2^{-k}$, independently of $a$: the base does
+not change the law, it merely \emph{rotates} the class by $a^{-1}$.
+\end{proposition}
+\begin{proof}
+$\val(an+1)\ge k$ means $an\equiv-1\pmod{2^{k}}$, i.e.\ $n\equiv-a^{-1}$, which exists and is
+unique because $a$ is a $2$-adic unit. One class out of $2^{k-1}$ odd residues gives the
+geometric weight; subtracting consecutive levels gives $2^{-k}$.
+\end{proof}
+
+\begin{proposition}[Second moment]\label{prop:var}
+$\mathbb{E}[v_{+}^{2}]=6-(4K+6)2^{-K}$, so $\mathbb{E}[v_{+}^{2}]\to6$ and
+$\operatorname{Var}(v_{+})\to 6-2^{2}=2$ --- exactly the mean and variance of $\mathrm{Geom}(1/2)$.
+\end{proposition}
+
+\begin{proposition}[The two valuations are anti-correlated]\label{prop:cov}
+$\val(3n+1)$ and $\val(3n-1)$ satisfy $\min(v_{+},v_{-})=1$ identically: $3n+1$ and $3n-1$ are
+consecutive even numbers, so exactly one is $\equiv2\pmod4$. Consequently
+$v_{+}v_{-}=\max(v_{+},v_{-})$, whence $\mathbb{E}[v_{+}v_{-}]\to3$ and
+\[
+  \operatorname{Cov}(v_{+},v_{-})=\mathbb{E}[v_{+}v_{-}]-\mathbb{E}[v_{+}]\,\mathbb{E}[v_{-}]
+  = 3-2\cdot2 = -1 .
+\]
+\end{proposition}
+\begin{proof}
+If $v_{+},v_{-}$ were independent the product mean would be $4$. Because one factor is always
+$1$, the product equals the other factor, i.e.\ $\max(v_{+},v_{-})$; and
+$\mathbb{E}[\max]=\mathbb{E}[v_{+}+v_{-}]-\mathbb{E}[\min]=4-1=3$. Subtracting the product of
+the means gives $-1$.
+\end{proof}
+
+\noindent The anti-correlation is the quantitative face of the up/down dichotomy: whenever one
+child of the two-sided step $n\mapsto\operatorname{odd\_part}(3n\pm1)$ rises sharply, the other
+is \emph{forced} to valuation $1$. The dichotomy is usually stated qualitatively; here it has a
+number, $\operatorname{Cov}=-1$.
+
+\section{Which bases admit closed-form orbits}\label{sec:fermat}
+
+Fix an odd $a\ge3$ and consider $\step_{a}(x)=\operatorname{odd\_part}(ax+1)$ on odd integers.
+Every odd $x$ has a unique \emph{block} form
+\begin{equation}\label{eq:block}
+  x=2^{r+1}m-1,\qquad m\ \text{odd},\ r\ge0,
+\end{equation}
+in which $r=\val(x+1)-1$.
+
+\begin{theorem}[One-step law and the characterisation]\label{thm:fermat}
+Let $a\ge3$ be odd and write $a-1=2^{e}q$ with $q$ odd. For every odd $m$ and every $r\ge e$,
+put $x=2^{\,r+1}m-1$. Then
+\begin{equation}\label{eq:onestep}
+  \val(ax+1)=e\qquad\text{and}\qquad \step_{a}(x)=a\,2^{\,r+1-e}m-q .
+\end{equation}
+Consequently the closed-form law $\step_{a}(x)=a\,2^{\,r+1-e}m-1$ holds \emph{if and only if}
+$q=1$, i.e.\ iff $a-1$ is a power of $2$, i.e.\ iff $a=2^{e}+1$. In that case iteration gives
+\begin{equation}\label{eq:orbit}
+  x_{i}=a^{i}\,2^{\,r+1-ie}m-1\qquad\text{for every }i\text{ with }ie\le r .
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Compute directly:
+\[
+  ax+1=a\bigl(2^{\,r+1}m-1\bigr)+1=a\,2^{\,r+1}m-(a-1)
+      =2^{e}\bigl(a\,2^{\,r+1-e}m-q\bigr).
+\]
+Since $r\ge e$ the bracket is (even)$-$(odd), hence odd; so $\val(ax+1)=e$ \emph{exactly} and
+$\step_{a}(x)$ equals the bracket, which is \eqref{eq:onestep}. The image equals
+$a2^{\,r+1-e}m-1$ precisely when $q=1$, which is both directions of the characterisation.
+
+For \eqref{eq:orbit}, let $q=1$. The image $a2^{\,r+1-e}m-1$ again has the shape
+\eqref{eq:block}, with odd parameter $m'=am$ and exponent $r'+1=r+1-e$; so the family is
+preserved and induction on $i$ gives \eqref{eq:orbit} as long as $ie\le r$.
+\end{proof}
+
+\noindent Note that \eqref{eq:onestep} holds for \emph{every} odd $a$ --- it is the general
+one-step law --- and the characterisation is the observation that its right-hand side lands
+back in the family exactly when the odd part $q$ of $a-1$ is trivial.
+
+\begin{remark}[Terminology]
+The bases $a=2^{e}+1$ are $3,5,9,17,33,65,129,257,513,\dots$ We call them
+\emph{Fermat-type} because the Fermat numbers $2^{2^{k}}+1$ are the sub-family $e=2^{k}$;
+the two sets are \emph{not} equal --- $9$, $33$, $65$, $129$ and $513$ are of the form
+$2^{e}+1$ without being Fermat numbers, and only $3,5,17,257,65537$ are Fermat primes.
+\end{remark}
+
+\begin{table}[ht]\centering
+\begin{tabular}{c c c c}
+\toprule
+$a$ & $a-1=2^{e}q$ & $q$ & closed form?\\\midrule
+$3$  & $2^{1}\cdot1$  & $1$ & yes (Collatz)\\
+$5$  & $2^{2}\cdot1$  & $1$ & yes\\
+$7$  & $2^{1}\cdot3$  & $3$ & no\\
+$9$  & $2^{3}\cdot1$  & $1$ & yes\\
+$11$ & $2^{1}\cdot5$  & $5$ & no\\
+$13$ & $2^{2}\cdot3$  & $3$ & no\\
+$15$ & $2^{1}\cdot7$  & $7$ & no\\
+$17$ & $2^{4}\cdot1$  & $1$ & yes\\
+$33$ & $2^{5}\cdot1$  & $1$ & yes\\
+\bottomrule
+\end{tabular}
+\caption{The closed form holds exactly when the odd part $q$ of $a-1$ is $1$
+(Theorem~\ref{thm:fermat}). The one-step law \eqref{eq:onestep} and the closed form were
+checked independently of each other --- so the ``no'' column is a genuine test, not a
+restatement of the hypothesis --- for all odd $a\le999$, $m\le200$ odd and $8$ consecutive
+$r\ge e$. The bases with $q=1$ up to $999$ are $3,5,9,17,33,65,129,257,513$.}
+\label{tab:fermat}
+\end{table}
+
+\begin{corollary}
+Collatz ($a=3$) is the smallest Fermat-type base; the next are $5,9,17,33,\dots$ (all such
+bases are odd, $2^{e}+1$ being odd for $e\ge1$). The
+heuristic drift of $\step_{a}$ is $\lambda_{a}=\log a-\mathbb{E}[\val]\log2=\log a-2\log2$
+(by Corollary~\ref{cor:geom}), negative iff $a<4$. Hence $a=3$ is the unique odd base on the
+contracting side, and every odd $a\ge5$ is super-critical.
+\end{corollary}
+\noindent In view of Remark~\ref{rem:scope}, the corollary is a statement about averages and
+decides no individual orbit; in particular it says nothing about whether $9x+1$ diverges from
+$x=1$.
+
+\section{A transcendental density constant}\label{sec:trans}
+
+Counting the odd integers whose first block does not immediately shrink leads to
+\begin{equation}\label{eq:def}
+  \CC=\frac12-\sum_{n\ge2}2^{-\lfloor n\log_{2}3\rfloor}.
+\end{equation}
+Summing \eqref{eq:def} to $n=300$ in $80$-digit arithmetic (the tail is below $2^{-475}$):
+\[
+  \CC=0.2862745023241087\,4196\ldots
+\]
+
+\begin{lemma}[Beatty bookkeeping]\label{lem:beatty}
+For every $n\in\mathbb{N}$, $\;n+\lfloor n\log_{2}(3/2)\rfloor=\lfloor n\log_{2}3\rfloor$.
+\end{lemma}
+\begin{proof}
+$\log_{2}(3/2)=\log_{2}3-1$ and $\lfloor y-k\rfloor=\lfloor y\rfloor-k$ for $k\in\mathbb{Z}$.
+\end{proof}
+\noindent The identity is elementary; we record it only because it identifies the two Beatty
+sequences that occur, and because the equivalent closed form
+$1-\sum_{n\ge1}2^{-(n+\lfloor n\log_{2}(3/2)\rfloor)}=\CC$ is the shape that was formalised.
+
+Set $\beta=\log_{2}3\in(1,2)$, irrational, with Beatty sequence
+$B=(\lfloor n\beta\rfloor)_{n\ge1}$, and gap word $w=(w_{n})_{n\ge1}$,
+$w_{n}=\lfloor n\beta\rfloor-\lfloor(n-1)\beta\rfloor$.
+
+\begin{lemma}\label{lem:gap}
+$w_{n}\in\{1,2\}$ for all $n$.
+\end{lemma}
+\begin{proof}
+$\lfloor y+\beta\rfloor-\lfloor y\rfloor\in\{\lfloor\beta\rfloor,\lfloor\beta\rfloor+1\}
+=\{1,2\}$ since $1<\beta<2$.
+\end{proof}
+
+\begin{lemma}[Sturmian]\label{lem:sturm}
+$w$ is Sturmian: its factor complexity is $p(k)=k+1$ for every $k\ge1$.
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:gap}, $w$ is the difference word of a Beatty sequence of irrational slope
+$\beta$; such words are precisely the mechanical words of slope $\beta-\lfloor\beta\rfloor$,
+which are Sturmian exactly because the slope is irrational
+(Morse--Hedlund~\cite{mh}; see Lothaire~\cite{lothaire}, Ch.~2).
+\end{proof}
+\noindent Computing the factors of $w$ directly for $n\le4000$ returns alphabet $\{1,2\}$ and
+$p(k)=k+1$ for all $k\le8$, as predicted.
+
+Since the exponents in \eqref{eq:def} increase by $w_{n}\in\{1,2\}$, the binary digits of the
+series are supported exactly on the Beatty set $\{\lfloor n\beta\rfloor\}$; the digit word of
+$\CC$ is the characteristic word of that set, Sturmian by Lemma~\ref{lem:sturm}.
+
+\begin{theorem}\label{thm:trans}
+$\CC$ is transcendental.
+\end{theorem}
+\begin{proof}
+The binary expansion of $\CC$ is Sturmian, hence aperiodic (so $\CC$ is irrational) with
+factor complexity $p(k)=k+1$. A real number whose base-$b$ expansion is Sturmian is
+transcendental by Ferenczi--Mauduit~\cite{fm}; alternatively, the complexity criterion of
+Adamczewski--Bugeaud~\cite{ab} shows that an algebraic irrational cannot have an expansion of
+complexity $p(k)=k+1$.
+\end{proof}
+
+\begin{corollary}
+For every real $a>1$ with $\log_{2}a\notin\mathbb{Q}$, the constant
+$C_{a}=1-\sum_{n\ge1}2^{-\lfloor n\log_{2}a\rfloor}$ is transcendental; in particular for
+every integer $a$ that is not a power of $2$.
+\end{corollary}
+\begin{proof}
+Identical, with $\beta=\log_{2}a$: only irrationality of $\beta$ is used, the gap alphabet
+being $\{\lfloor\beta\rfloor,\lfloor\beta\rfloor+1\}$.
+\end{proof}
+
+\begin{remark}
+The continued fraction of $\CC$ begins
+\[
+  [0;\,3,\,2,\,36,\,2056,\,70368878395648,\,\dots],
+\]
+the large early partial quotients reflecting exceptionally good dyadic-rational
+approximations; only terms stable across two independent precisions are reported. We checked
+$\CC$ against the CODATA physical constants and the standard mathematical constants and found
+no match within $10^{-3}$: it is a genuinely new constant, transcendental by
+Theorem~\ref{thm:trans}, with no known closed form.
+\end{remark}
+
+\section{No finite-residue reduction}\label{sec:nofinite}
+
+Experimentation with \eqref{eq:step} makes it tempting to conclude that the step is
+determined by a residue of $x$ --- for instance modulo $24$, where the residue \emph{class}
+does evolve deterministically. It is not, and we state this explicitly because the error
+recurs.
+
+\begin{proposition}\label{prop:nofinite}
+For every modulus $M$, the valuation $\val(3x+1)$ is \emph{not} a function of $x\bmod M$.
+\end{proposition}
+\begin{proof}
+Write $M=2^{s}M'$ with $M'$ odd, and let $c$ be the unique solution of $3c\equiv-1
+\pmod{2^{s+1}}$; it is odd, since $c=-3^{-1}$ and $3^{-1}$ is a unit. Every $x\equiv c
+\pmod{2^{s}}$ has $\val(3x+1)\ge s$, but the exact value is decided by the binary digits of
+$x$ above position $s$, which the residue $x\bmod M$ does not see. Concretely, by the Chinese
+Remainder Theorem choose odd $x,y$ with $x\equiv y\equiv c\pmod{2^{s}}$ and $x\equiv y
+\pmod{M'}$ --- so $x\equiv y\pmod M$ --- while additionally $3x+1\equiv2^{s}\pmod{2^{s+1}}$
+and $3y+1\equiv0\pmod{2^{s+1}}$; the two congruence systems are compatible because they
+constrain $x$ and $y$ modulo $2^{s+1}$ and $M'$ at coprime places. Then $\val(3x+1)=s$ while
+$\val(3y+1)\ge s+1$.
+\end{proof}
+
+\noindent The point is that $\val(3x+1)\ge s$ is decided by $x\bmod 2^{s}$, but $\val(3x+1)=s$
+exactly is not: the valuation sequence needs unbounded $2$-adic precision, so the dynamics is
+\emph{not} a finite automaton on residues.
+
+\paragraph{The case $M=24$, explicitly.} Among the $2000$ odd $x<4000$:
+\begin{itemize}[nosep]
+  \item $500$ ($25\%$) have $\val(3x+1)\ne\val(3(x+24)+1)$; the smallest is $x=5$, $y=29$,
+        with $\val(16)=4\ne3=\val(88)$.
+  \item $1959$ ($98\%$) have $\step(x)\not\equiv\step(x+24)\pmod{24}$ --- so even the residue
+        class of the image is not determined. The smallest witness is $x=1$, $y=25$:
+        $\step(1)=1$ and $\step(25)=19$, and $1\not\equiv19\pmod{24}$.
+\end{itemize}
+An argument reducing the dynamics to finitely many residue classes therefore cannot be
+correct. We stress a related trap: verifying a claimed identity on the $M$ residue
+\emph{representatives} $x=1,3,\dots,M-1$ establishes nothing about the other members of each
+class --- $x=1$ passes while $x=25$, in the same class, fails.
+
+\section{Verification and formalisation}\label{sec:verif}
+
+\begin{table}[ht]\centering
+\small
+\begin{tabular}{@{}l l l@{}}
+\toprule
+Result & Status & Evidence\\\midrule
+Thm~\ref{thm:geom} & proved; machine-checked &
+  Lean~4: \texttt{geometric\_distribution\_informal}\\
+Cor.~\ref{cor:geom} & proved (counting) & from Thm~\ref{thm:geom}; recomputed exactly\\
+Prop.~\ref{prop:rot} & proved; machine-checked & Lean~4: rotation law, $6$ bases certified\\
+Prop.~\ref{prop:var} & proved & $\mathbb{E}[v_{+}^{2}]=6-(4K+6)2^{-K}$ exact, $K\le18$\\
+Prop.~\ref{prop:cov} & proved & $\operatorname{Cov}=-1$ exact; $v_{+}v_{-}=\max$ ($0$ exc.)\\
+Thm~\ref{thm:fermat} & proved; machine-checked (both ways) &
+  Lean~4: \texttt{closed\_form\_iff\_fermat}\\
+Lem.~\ref{lem:beatty} & proved (elementary) & one line; also in Lean\\
+Lem.~\ref{lem:sturm} & proved (Morse--Hedlund) & $p(k)=k+1$ recomputed for $k\le8$\\
+Thm~\ref{thm:trans} & proved via \cite{fm,ab} & $\CC$ to $80$ digits; expansion Sturmian\\
+Prop.~\ref{prop:nofinite} & proved & $1959/2000$ witnesses at $M=24$, $x<4000$\\
+\bottomrule
+\end{tabular}
+\caption{Status of each result. ``Machine-checked'' means Lean's kernel accepts the proof
+with no \texttt{sorry} and only the ambient axioms \texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}.}
+\end{table}
+
+The Lean development builds with \texttt{lake build CollatzProof.KodamaCollatz
+CollatzProof.KodamaFermat}, and \texttt{\#print axioms} is inspected for every theorem cited
+above; all report exactly \texttt{[propext, Classical.choice, Quot.sound]}. The audit is kept
+as \texttt{CollatzProof/AxiomAudit.lean} so that it re-runs on every build. Both halves of
+Theorem~\ref{thm:fermat} are in the kernel: \texttt{step\_a\_general} is the one-step law
+\eqref{eq:onestep} for every odd base, and \texttt{closed\_form\_iff\_fermat} is the
+biconditional itself. The numerical statements (the value of $\CC$, the gap alphabet, the
+factor complexity, Table~\ref{tab:fermat}, the witness counts) are regenerated by a single
+script using exact integer and high-precision decimal arithmetic --- no floating point is used
+where exactness is claimed.
+
+\section{What is not claimed}
+
+\begin{itemize}[nosep]
+  \item No progress on the Collatz conjecture. Sections~\ref{sec:geom}--\ref{sec:trans} are
+        independent of it, and Section~\ref{sec:nofinite} is limitative.
+  \item No claim of novelty for Lemma~\ref{lem:beatty}, which is one line.
+  \item Corollary~\ref{cor:geom} is about uniform residues, not about individual orbits
+        (Remark~\ref{rem:scope}).
+\end{itemize}
+
+\section*{Acknowledgements}
+The author thanks Ingo Alth\"ofer for maintaining an open problem list that prompted several
+of these questions, and the Lean~4 and \emph{mathlib} communities. This work is AI-assisted;
+every statement reported here was verified by exact computation or by Lean's kernel before
+inclusion, and every candidate that failed verification was discarded.
+
+\begin{thebibliography}{99}
+\bibitem{ab} B.~Adamczewski and Y.~Bugeaud,
+\emph{On the complexity of algebraic numbers I. Expansions in integer bases},
+Ann. of Math. (2) \textbf{165} (2007), no.~2, 547--565.
+
+\bibitem{az} I.~Alth\"ofer and T.~Zipproth,
+\emph{Divergence in a Collatz-type recursion}, preprint, August 2025.
+
+\bibitem{fm} S.~Ferenczi and C.~Mauduit,
+\emph{Transcendence of numbers with a low complexity expansion},
+J. Number Theory \textbf{67} (1997), no.~2, 146--161.
+
+\bibitem{lagarias} J.~C. Lagarias,
+\emph{The $3x+1$ problem and its generalizations},
+Amer. Math. Monthly \textbf{92} (1985), no.~1, 3--23.
+
+\bibitem{lagarias-book} J.~C. Lagarias (ed.),
+\emph{The Ultimate Challenge: The $3x+1$ Problem}, American Mathematical Society, 2010.
+
+\bibitem{lothaire} M.~Lothaire,
+\emph{Algebraic Combinatorics on Words}, Encyclopedia of Mathematics and its Applications
+\textbf{90}, Cambridge University Press, 2002.
+
+\bibitem{mathlib} The mathlib Community,
+\emph{The Lean mathematical library}, in: Proc. 9th ACM SIGPLAN Int. Conf. on Certified
+Programs and Proofs (CPP 2020), 367--381.
+
+\bibitem{mh} M.~Morse and G.~A. Hedlund,
+\emph{Symbolic dynamics II: Sturmian trajectories},
+Amer. J. Math. \textbf{62} (1940), 1--42.
+
+\bibitem{moura} L.~de Moura and S.~Ullrich,
+\emph{The Lean 4 theorem prover and programming language},
+in: Automated Deduction --- CADE 28, LNCS \textbf{12699}, Springer, 2021, 625--635.
+
+\bibitem{tao} T.~Tao,
+\emph{Almost all orbits of the Collatz map attain almost bounded values},
+Forum Math. Pi \textbf{10} (2022), e12.
+
+\bibitem{terras} R.~Terras,
+\emph{A stopping time problem on the positive integers},
+Acta Arith. \textbf{30} (1976), no.~3, 241--252.
+\end{thebibliography}
+
+\end{document}

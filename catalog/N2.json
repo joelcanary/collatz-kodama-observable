@@ -1,0 +1,14 @@
+{
+  "id": "N2",
+  "problema": "collatz",
+  "nivel": "V",
+  "enunciado": "E[v₂] NO admite forma cerrada de ninguna familia probada: la corrección crece y no es periódica ni mod 6 ni mod 12. Asimetría con v₁, coherente con T11: dos pasos consumen precisión 2-ádica por encima de K.",
+  "evidencia": "research/exploraciones/v2_correccion.py",
+  "rango": "K = 3..19",
+  "hipotesis": "Si v₁ es periódico, ¿lo es también v₂?",
+  "relacionado": [
+    "N1",
+    "T11"
+  ],
+  "fecha": "2026-07-20"
+}

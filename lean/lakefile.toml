@@ -1,0 +1,14 @@
+name = "collatz_exact_results"
+defaultTargets = ["CollatzProof"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0-rc1"
+
+# Only the three files cited by the papers are shipped here:
+#   CollatzProof/KodamaCollatz.lean  -- valuation laws (geometric_distribution_informal, ...)
+#   CollatzProof/KodamaFermat.lean   -- one-step law and closed_form_iff_fermat
+#   CollatzProof/AxiomAudit.lean     -- #print axioms for every cited theorem
+[[lean_lib]]
+name = "CollatzProof"

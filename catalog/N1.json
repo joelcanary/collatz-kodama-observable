@@ -1,0 +1,14 @@
+{
+  "id": "N1",
+  "problema": "collatz",
+  "nivel": "V",
+  "enunciado": "E[v₁] = 2 − c(K mod 6)·2^{−K} con c = (2,2,0,0,−2,2). Ninguna familia polinómica la captura: la corrección cambia de signo.",
+  "evidencia": "python main.py --forjar collatz  (observable 'v_1 (paso 1)')",
+  "rango": "K = 3..25, tres períodos completos, 0 excepciones",
+  "hipotesis": "¿Por qué v_1 salía SIN PATRÓN con la familia 2-ádica polinómica?",
+  "relacionado": [
+    "N2",
+    "T16"
+  ],
+  "fecha": "2026-07-20"
+}

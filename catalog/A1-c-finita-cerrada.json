@@ -1,0 +1,14 @@
+{
+  "id": "A1-c-finita-cerrada",
+  "problema": "collatz",
+  "nivel": "P",
+  "enunciado": "A1 (¿forma cerrada de ρ(j)?), vía cerrada con rigor: ρ(j) NO es C-finita de orden ≤ 7 — no satisface ninguna recurrencia lineal de orden hasta 7 (resuelto exacto en Fraction sobre los 18 términos, y exigido que ajuste TODOS). Control: el detector sí encuentra la recurrencia de Fibonacci (orden 2), así que el negativo es firme. Descarta por completo la vía de forma cerrada por recurrencia lineal.",
+  "evidencia": "python research/exploraciones/rho_A1_riguroso.py  |  python -m unittest tests.test_rho_a1",
+  "rango": "los 18 términos de ρ(j), j=3..20; recurrencias de orden ≤ 7",
+  "hipotesis": "¿Tiene ρ(j) forma cerrada por recurrencia lineal?",
+  "relacionado": [
+    "A1-T16-refutada",
+    "A1-sturmiana-sugerida"
+  ],
+  "fecha": "2026-07-21"
+}
