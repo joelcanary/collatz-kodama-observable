@@ -1,4 +1,6 @@
-# Collatz-type dynamics: exact results, a structural note, and the Kodama observable
+# The Kodama observable for Collatz-type dynamics
+
+![The Kodama observable for Collatz-type dynamics](figures/social-preview.png)
 
 This repository publishes, in full and with its verification, a research campaign on the
 accelerated Collatz map `step(x) = (3x + 1) / 2^{v₂(3x+1)}` conducted in 2026 by
