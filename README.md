@@ -49,9 +49,14 @@ by `scripts/make_figures.py` and `scripts/kodama_scan.py`.
 **Conjecture (champion).** `δ(n) < 0.33` for every odd `n > 1`, equivalently `R(n) < 0.2021`,
 with the maximum attained at `n = 993` (`δ = 0.325550…`, `R = 465793961683815839 / 2⁶¹ = 0.202006…`).
 
-**Evidence.** `scripts/kodama_scan.py` scans every odd `n ≤ 10⁸` (50 s on 8 cores; results
+**Evidence.** `scripts/kodama_scan.py` scans every odd `n ≤ 10⁸` (≈9 min on 8 cores; results
 in `data/kodama_scan_100000000.json`): the maximum is `n = 993`, and the next values form a
-plateau at `δ = 0.325377` (`n = 167211, 21945135, 32917703, 78027147, 87780541, …`). This is
+plateau at `δ = 0.325377` (`n = 167211, 21945135, 32917703, 78027147, 87780541, …`). **Every
+comparison in the scan is an integer comparison** on `R(n) = (2^S − 3^K n)/2^S` (champion,
+plateau order, histogram bins, threshold); `δ` is computed in floating point only for display.
+Until 15-Sep-2026 the scan compared `δ` as a double — same champion, same plateau, same
+histogram, verified by re-running both — but the verdict of a repository called *exact* should
+not rest on floating point, and now it does not. This is
 a finite computation. It supports the conjecture and proves nothing beyond `10⁸`. Earlier
 documents of this project stated the bound as a theorem; see **Withdrawn claims** below.
 
@@ -95,7 +100,7 @@ and asserts it before drawing.
 ```bash
 python papers/three-exact-results/verify.py        # every number of the main paper, [OK]/[FAIL]
 python papers/althofer-prize3/verify_prize3.py       # the Prize-3 counts
-python scripts/kodama_scan.py 100000000 8            # the 10^8 scan (~1 min on 8 cores)
+python scripts/kodama_scan.py 100000000 8            # the 10^8 scan, exact integer comparisons (~9 min on 8 cores)
 python scripts/make_figures.py                       # the figures, with their internal checks
 cd lean && lake exe cache get && lake build          # the Lean proofs; AxiomAudit prints the axioms
 ```
