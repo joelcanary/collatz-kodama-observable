@@ -67,7 +67,7 @@ $w$ is a Sturmian word: its factor complexity satisfies $p(k)=k+1$ for every $k\
 \begin{proof}
 $w$ is, by Lemma~\ref{lem:gap}, the difference word of a Beatty sequence of irrational slope
 $\beta$; such words are exactly the mechanical words of slope $\beta-\lfloor\beta\rfloor$,
-which are Sturmian precisely because the slope is irrational (Morse--Hedlund).
+which are Sturmian precisely because the slope is irrational (Morse--Hedlund~\cite{mh}).
 \end{proof}
 \noindent \emph{Verification.} Computing the factors of $w$ directly for $n\le4000$ gives
 $p(k)=k+1$ for all $k\le8$, with alphabet $\{1,2\}$, as predicted.
@@ -104,8 +104,14 @@ $\{\lfloor\beta\rfloor,\lfloor\beta\rfloor+1\}$; the mechanical-word argument is
 
 \begin{remark}
 We checked $\CC$ against the CODATA physical constants and the standard mathematical
-constants and found no match to within $10^{-3}$: it is a genuinely new constant, with no
-known closed form, transcendental by Theorem~\ref{thm:main}.
+constants and found no match to within $10^{-3}$; we know of no closed form for it, and it is transcendental by Theorem~\ref{thm:main}. It is
+not, however, a constant of a new kind: it belongs to the classical family
+$\sum_{n\ge1} b^{-\lfloor n\alpha\rfloor}$, studied since B\"ohmer~\cite{bohmer}, who proved
+transcendence when $\alpha$ has unbounded partial quotients, and later by
+Danilov~\cite{danilov}, Davison~\cite{davison} and Adams--Davison~\cite{adamsdavison}, the last
+of whom give the continued fraction of $(b-1)\sum_{n\ge1} b^{-\lfloor n\alpha\rfloor}$
+explicitly for every irrational $\alpha$. What is specific here is only that this member of
+the family, with $b=2$ and $\alpha=\log_2 3$, is the one the Collatz observable produces.
 \end{remark}
 
 \begin{remark}[Diophantine flavour]
@@ -125,7 +131,7 @@ The value, the gap alphabet and the factor complexity are recomputed by
 \section*{Acknowledgement}
 AI-assisted; every claim was verified by exact computation or Lean's kernel before inclusion.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{fm} S.~Ferenczi, C.~Mauduit, \emph{Transcendence of numbers with a low complexity
 expansion}, J. Number Theory \textbf{67} (1997), 146--161.
 \bibitem{ab} B.~Adamczewski, Y.~Bugeaud, \emph{On the complexity of algebraic numbers I.
@@ -133,5 +139,16 @@ Expansions in integer bases}, Ann. of Math. \textbf{165} (2007), 547--565.
 \bibitem{lothaire} M.~Lothaire, \emph{Algebraic Combinatorics on Words}, CUP, 2002.
 \bibitem{lagarias} J.~C. Lagarias, \emph{The $3x+1$ problem and its generalizations},
 Amer. Math. Monthly \textbf{92} (1985), 3--23.
+\bibitem{mh} M.~Morse and G.~A. Hedlund, \emph{Symbolic dynamics II: Sturmian trajectories},
+Amer. J. Math. \textbf{62} (1940), 1--42. doi:10.2307/2371431.
+\bibitem{bohmer} P.~E. B\"ohmer, \emph{\"Uber die Transzendenz gewisser dyadischer Br\"uche},
+Math. Ann. \textbf{96} (1927), 367--377. doi:10.1007/BF01209172.
+\bibitem{danilov} L.~V. Danilov, \emph{Some classes of transcendental numbers},
+Math. Notes \textbf{12} (1972), 524--527. doi:10.1007/BF01095010.
+\bibitem{davison} J.~L. Davison, \emph{A series and its associated continued fraction},
+Proc. Amer. Math. Soc. \textbf{63} (1977), 29--32. doi:10.1090/S0002-9939-1977-0429778-5.
+\bibitem{adamsdavison} W.~W. Adams and J.~L. Davison, \emph{A remarkable class of continued
+fractions}, Proc. Amer. Math. Soc. \textbf{65} (1977), 194--198.
+doi:10.1090/S0002-9939-1977-0441879-4.
 \end{thebibliography}
 \end{document}

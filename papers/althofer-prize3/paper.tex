@@ -40,13 +40,15 @@ $n$ can decide this game.
 
 \section{The game}
 
-On the odd integers, a position $n>1$ has two moves,
+The game is Prize~3 of Alth\"ofer's list of Collatz prizes~\cite{althofer}; for a closely
+related two-player Collatz game and other variants of the $3n+1$ problem
+see~\cite{ahz}. On the odd integers, a position $n>1$ has two moves,
 \[
   n\ \longmapsto\ \op(3n+1)\qquad\text{or}\qquad n\ \longmapsto\ \op(3n-1),
 \]
 where $\op(x)=x/2^{\val(x)}$. The position $1$ is terminal; the player who moves to $1$ wins.
 The game is \emph{impartial} (both players share the same two moves from any position), so by
-Zermelo's theorem every position is either an $N$-position (the player to move wins under
+Zermelo's theorem~\cite{zermelo} every position is either an $N$-position (the player to move wins under
 optimal play; ``WIN'') or a $P$-position (``LOSE''), computed by backward induction from $1$:
 \begin{itemize}[nosep]
   \item $1$ is a $P$-position (LOSE for the player to move);
@@ -169,5 +171,11 @@ shortest path) after an initial mistake.
 \url{https://althofer.de/collatz-prizes.html}.
 \bibitem{lagarias} J.~C. Lagarias (ed.), \emph{The Ultimate Challenge: The $3x+1$ Problem},
 American Mathematical Society, 2010.
+\bibitem{ahz} I.~Alth\"ofer, M.~Hartisch and T.~Zipproth, \emph{Analysis of a Collatz game and
+other variants of the $3n+1$ problem}, in: Advances in Computer Games, LNCS, Springer, 2024,
+123--132. doi:10.1007/978-3-031-54968-7\_11.
+\bibitem{zermelo} E.~Zermelo, \emph{\"Uber eine Anwendung der Mengenlehre auf die Theorie des
+Schachspiels}, in: Proc. Fifth Int. Congress of Mathematicians (Cambridge, 1912), vol.~II,
+1913, 501--504. JFM 44.0092.04.
 \end{thebibliography}
 \end{document}

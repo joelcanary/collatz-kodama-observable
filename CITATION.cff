@@ -7,7 +7,7 @@ authors:
     orcid: "https://orcid.org/0009-0005-4048-1237"
 year: 2026
 license: Apache-2.0
-repository-code: "https://github.com/joelcanary/collatz-exact-results"
+repository-code: "https://github.com/joelcanary/collatz-kodama-observable"
 keywords:
   - Collatz map
   - 2-adic valuation

@@ -350,8 +350,14 @@ The continued fraction of $\CC$ begins
 the large early partial quotients reflecting exceptionally good dyadic-rational
 approximations; only terms stable across two independent precisions are reported. We checked
 $\CC$ against the CODATA physical constants and the standard mathematical constants and found
-no match within $10^{-3}$: it is a genuinely new constant, transcendental by
-Theorem~\ref{thm:trans}, with no known closed form.
+no match within $10^{-3}$; we know of no closed form for it, and it is transcendental by Theorem~\ref{thm:trans}. It is
+not, however, a constant of a new kind: it belongs to the classical family
+$\sum_{n\ge1} b^{-\lfloor n\alpha\rfloor}$, studied since B\"ohmer~\cite{bohmer}, who proved
+transcendence when $\alpha$ has unbounded partial quotients, and later by
+Danilov~\cite{danilov}, Davison~\cite{davison} and Adams--Davison~\cite{adamsdavison}, the last
+of whom give the continued fraction of $(b-1)\sum_{n\ge1} b^{-\lfloor n\alpha\rfloor}$
+explicitly for every irrational $\alpha$. What is specific here is only that this member of
+the family, with $b=2$ and $\alpha=\log_2 3$, is the one the Collatz observable produces.
 \end{remark}
 
 \section{No finite-residue reduction}\label{sec:nofinite}
@@ -452,7 +458,7 @@ inclusion, and every candidate that failed verification was discarded.
 Ann. of Math. (2) \textbf{165} (2007), no.~2, 547--565.
 
 \bibitem{az} I.~Alth\"ofer and T.~Zipproth,
-\emph{Divergence in a Collatz-type recursion}, preprint, August 2025.
+\emph{Divergence in a Collatz-type recursion}, preprint, August 2025, \url{https://althofer.de/althoefer-zipproth-august-2025.pdf}.
 
 \bibitem{fm} S.~Ferenczi and C.~Mauduit,
 \emph{Transcendence of numbers with a low complexity expansion},
@@ -488,6 +494,15 @@ Forum Math. Pi \textbf{10} (2022), e12.
 \bibitem{terras} R.~Terras,
 \emph{A stopping time problem on the positive integers},
 Acta Arith. \textbf{30} (1976), no.~3, 241--252.
+\bibitem{bohmer} P.~E. B\"ohmer, \emph{\"Uber die Transzendenz gewisser dyadischer Br\"uche},
+Math. Ann. \textbf{96} (1927), 367--377. doi:10.1007/BF01209172.
+\bibitem{danilov} L.~V. Danilov, \emph{Some classes of transcendental numbers},
+Math. Notes \textbf{12} (1972), 524--527. doi:10.1007/BF01095010.
+\bibitem{davison} J.~L. Davison, \emph{A series and its associated continued fraction},
+Proc. Amer. Math. Soc. \textbf{63} (1977), 29--32. doi:10.1090/S0002-9939-1977-0429778-5.
+\bibitem{adamsdavison} W.~W. Adams and J.~L. Davison, \emph{A remarkable class of continued
+fractions}, Proc. Amer. Math. Soc. \textbf{65} (1977), 194--198.
+doi:10.1090/S0002-9939-1977-0441879-4.
 \end{thebibliography}
 
 \end{document}
