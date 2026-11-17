@@ -49,9 +49,9 @@ Counting odd integers whose first block does not immediately shrink gives
 `C_Collatz = ½ − Σ_{n≥2} 2^{−⌊n log₂3⌋} = 0.28627450232410874196…`
 
 The exponents `⌊n log₂3⌋` form a Beatty sequence of irrational slope; its gap word (gaps in
-`{1, 2}`) is Sturmian (Morse–Hedlund), so the binary expansion of `C_Collatz` has factor
+`{1, 2}`) is Sturmian ([Morse–Hedlund 1940](https://doi.org/10.2307/2371431)), so the binary expansion of `C_Collatz` has factor
 complexity `p(k) = k + 1`. Numbers with Sturmian expansions are transcendental
-(Ferenczi–Mauduit 1997; alternatively Adamczewski–Bugeaud 2007). The same argument gives
+([Ferenczi–Mauduit 1997](https://doi.org/10.1006/jnth.1997.2175); alternatively [Adamczewski–Bugeaud 2007](https://doi.org/10.4007/annals.2007.165.547)). The same argument gives
 transcendence of `C_a = 1 − Σ 2^{−⌊n log₂ a⌋}` for every `a` with `log₂ a` irrational.
 
 *Checked exactly:* 80-digit value, gap alphabet, `p(k) = k+1` for `k ≤ 8`, continued fraction
