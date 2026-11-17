@@ -16,6 +16,7 @@ jobs:
           python-version: "3.12"
       - run: pip install numpy matplotlib
       - run: python papers/three-exact-results/verify.py
+      - run: python scripts/check_b401012.py
       - run: python papers/althofer-prize3/verify_prize3.py
       - run: python scripts/kodama_scan.py 1000000 2
       - run: python scripts/make_figures.py
